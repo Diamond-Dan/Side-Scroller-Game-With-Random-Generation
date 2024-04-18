@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=3 uid="uid://hgsbqqn6aaj1"]
+
+[ext_resource type="Script" path="res://ground.gd" id="1_7l2c1"]
+[ext_resource type="Script" path="res://player.gd" id="2_d6scy"]
+[ext_resource type="Texture2D" uid="uid://btrvbt32lmsyu" path="res://ship.png" id="3_5kjen"]
+[ext_resource type="Texture2D" uid="uid://dcvxmbun66n7y" path="res://icon.svg" id="4_uy7uw"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rjbw0"]
+radius = 28.39
+height = 153.92
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_m3q08"]
+a = Vector2(1.355, 0)
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_7l2c1")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(152, 261)
+motion_mode = 1
+script = ExtResource("2_d6scy")
+
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+position = Vector2(427, 67)
+
+[node name="char_col" type="CollisionShape2D" parent="CharacterBody2D"]
+position = Vector2(29.61, 3.85)
+rotation = 1.60396
+shape = SubResource("CapsuleShape2D_rjbw0")
+
+[node name="Sprite2D" type="Sprite2D" parent="CharacterBody2D"]
+position = Vector2(1, 0)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_5kjen")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="Line2D" type="Line2D" parent="StaticBody2D"]
+position = Vector2(9, 574)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("SegmentShape2D_m3q08")
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D/CollisionShape2D"]
+texture = ExtResource("4_uy7uw")
+
+[connection signal="end_point_of_line" from="." to="CharacterBody2D" method="_on_node_2d_end_point_of_line"]
+[connection signal="end_of_the_line" from="CharacterBody2D" to="." method="_on_character_body_2d_end_of_the_line"]
