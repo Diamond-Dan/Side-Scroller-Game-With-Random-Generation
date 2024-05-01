@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=3 uid="uid://m4mldp66rc6m"]
+
+[ext_resource type="Script" path="res://Start_Button.gd" id="1_ucgwb"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Start_Button" type="Button" parent="."]
+offset_left = 510.0
+offset_top = 266.0
+offset_right = 518.0
+offset_bottom = 274.0
+scale = Vector2(1.76923, 2.63158)
+text = "Start Game"
+script = ExtResource("1_ucgwb")
+
+[node name="Tutorial_Button" type="Button" parent="."]
+custom_minimum_size = Vector2(120, 80)
+offset_left = 533.0
+offset_top = 372.0
+offset_right = 653.0
+offset_bottom = 452.0
+text = "Tutorial"
+
+[node name="Options_button" type="Button" parent="."]
+offset_left = 1037.0
+offset_top = 29.0
+offset_right = 1111.0
+offset_bottom = 60.0
+text = "Options "
+
+[node name="Name" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(404, 152)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 403.0
+offset_top = 120.0
+offset_right = 807.0
+offset_bottom = 272.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 53
+theme_override_font_sizes/bold_font_size = 1
+text = "Micro Defender"
