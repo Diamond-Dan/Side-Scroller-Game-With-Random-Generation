@@ -10,8 +10,8 @@ func get_input():
 func _physics_process(delta):
 	get_input()
 	move_and_slide()
-	#if position.x>=(line_end-1000):
-		#end_of_the_line.emit()
+	if position.x>=(line_end-1000):
+		end_of_the_line.emit()
 	
 
 func _on_node_2d_end_point_of_line(num):
