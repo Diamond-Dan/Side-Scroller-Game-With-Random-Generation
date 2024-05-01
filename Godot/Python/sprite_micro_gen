@@ -1,7 +1,55 @@
+import random
 from PIL import Image, ImageDraw
 
-img = Image.new('RGB', (100, 100), color = (255,255,255))
-
+img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
+random.seed(1)
 draw=ImageDraw.Draw(img)
+int_x=10
+int_y=10
+new_x=int_x
+new_y=int_y
+lastrand=0
+draw.rectangle((int_x,int_y,int_x+5,int_y+5),fill=(255,0,0,255))
+i=0
+random_color_1=random.randint(0,255)
+random_color_2=random.randint(0,255)
+random_color_3=random.randint(0,255)
+random_color_4=random.randint(0,255)
+while i<1000:
+    random_number=random.randint(1,4)
+    random_color_1+=random.randint(-10,10)
+    random_color_2+=random.randint(-10,10)
+    random_color_3+=random.randint(-10,10)
+    random_color_4+=random.randint(-10,10)
+    if random_color_1<=0 or random_color_1>=255:
+        random_color_1=255
+    if random_color_2<=0 or random_color_2>=255:
+        random_color_2=0
+    if random_color_3<=0 or random_color_3>=255:
+        random_color_3=0
+    if random_color_4<=0 or random_color_4>=255:
+        random_color_4=255
+
+    
+    if lastrand==1 or lastrand==2:
+        random_number=random.randint(3,4)
+    elif lastrand==3 or lastrand==4:
+        random_number=random.randint(1,2)
+    if random_number == 1:
+        new_x+=5
+    elif random_number == 2:
+        new_x-=5
+    elif random_number == 3:
+        new_y+=5
+    elif random_number == 4:
+        new_y-=5
+    lastrand=random_number
+    print(new_x,new_y)
+    if new_x<10 or new_x>90 or new_y<10 or new_y>90:
+        new_x=int_x
+        new_y=int_y
+
+    draw.rectangle((new_x,new_y,new_x+5,new_y+5),fill=(random_color_1,random_color_2,random_color_3,random_color_4))
+    i+=1
 
 img.save('test.png')
