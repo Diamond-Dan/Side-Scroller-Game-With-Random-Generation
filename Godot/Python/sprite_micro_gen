@@ -1,55 +1,167 @@
 import random
+import imageio.v2  as imageio
+import os
+import sys
+import xml.etree.ElementTree as ET
 from PIL import Image, ImageDraw
 
-img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
-random.seed(1)
-draw=ImageDraw.Draw(img)
-int_x=10
-int_y=10
-new_x=int_x
-new_y=int_y
-lastrand=0
-draw.rectangle((int_x,int_y,int_x+5,int_y+5),fill=(255,0,0,255))
-i=0
-random_color_1=random.randint(0,255)
-random_color_2=random.randint(0,255)
-random_color_3=random.randint(0,255)
-random_color_4=random.randint(0,255)
-while i<1000:
-    random_number=random.randint(1,4)
-    random_color_1+=random.randint(-10,10)
-    random_color_2+=random.randint(-10,10)
-    random_color_3+=random.randint(-10,10)
-    random_color_4+=random.randint(-10,10)
-    if random_color_1<=0 or random_color_1>=255:
-        random_color_1=255
-    if random_color_2<=0 or random_color_2>=255:
-        random_color_2=0
-    if random_color_3<=0 or random_color_3>=255:
-        random_color_3=0
-    if random_color_4<=0 or random_color_4>=255:
-        random_color_4=255
+
+def main(frames,seed,pixel_number):
+    int_x=10
+    int_y=10
+    guide_array_x,guide_array_y,color_array=draw_random_image_intial(int_x,int_y,seed,pixel_number)
+    filename=[]
+    cur_file_loc=os.path.dirname(os.path.realpath(__file__))
+    filecount=0
+    # print("testing")
+    # print(cur_file_loc+"\\gifs")
+    for i in range(frames):
+       name=draw_image_guided(guide_array_x,guide_array_y,color_array,i)
+       filename.append(name)
+    
+    images = []
+    for i in range(len(filename)):  
+        images.append(imageio.imread(filename[i]))
+
+    while os.path.isfile(cur_file_loc+"\\gifs\\movie"+str(filecount)+".gif"):
+        filecount+=1
+
+    imageio.mimsave(cur_file_loc+"\\gifs\\movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif", images,'GIF',disposal=2,loop=0)
+
+def draw_image_guided(guide_array_x,guide_array_y,color_array,frame_num):
+    img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
+    draw=ImageDraw.Draw(img)
+    for i in range(len(guide_array_x)):
+        new_x=guide_array_x[i]+(frame_num+random.randint(-10,10))
+        new_y=guide_array_y[i]+(frame_num+random.randint(-10,10))
+        if new_x<10:
+            new_x+=25
+        if new_x>90:
+            new_x-=25
+        if new_y<10:
+            new_y+=25
+        if new_y>90:
+            new_y-=25
+        draw.rectangle((new_x,new_y,new_x+5,new_y+5),fill=(color_array[i*4],color_array[i*4+1],color_array[i*4+2],color_array[i*4+3]))
+    name="test"+str(frame_num)+".png"
+    img.save(name)
+    return name
+
+
+def draw_random_image_intial(x,y,seed,pixel_number):
+    array_x=[x]
+    array_y=[y]
+    new_x=x
+    new_y=y
+    img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
+    random.seed(seed)
+    draw=ImageDraw.Draw(img)
+    lastrand=0
+    draw.rectangle((x,y,x+5,y+5),fill=(255,0,0,255))
+    i=0
+    random_color_1=random.randint(0,255)
+    random_color_2=random.randint(0,255)
+    random_color_3=random.randint(0,255)
+    random_color_4=random.randint(0,255)
+    random_color_array=[random_color_1,random_color_2,random_color_3,random_color_4]
+    while i<pixel_number:
+        random_number=random.randint(1,4)
+        random_color_1+=random.randint(-10,10)
+        random_color_2+=random.randint(-10,10)
+        random_color_3+=random.randint(-10,10)
+        random_color_4+=random.randint(-10,10)
+        random_color_array.append(random_color_1)
+        random_color_array.append(random_color_2) 
+        random_color_array.append(random_color_3)
+        random_color_array.append(random_color_4)
+        if random_color_1<=0 or random_color_1>=255:
+            random_color_1=255
+        if random_color_2<=0 or random_color_2>=255:
+            random_color_2=0
+        if random_color_3<=0 or random_color_3>=255:
+            random_color_3=0
+        if random_color_4<=0 or random_color_4>=255:
+            random_color_4=255
+
+        
+        if lastrand==1 or lastrand==2:
+            random_number=random.randint(3,4)
+        elif lastrand==3 or lastrand==4:
+            random_number=random.randint(1,2)
+        if random_number == 1:
+            new_x+=5
+        elif random_number == 2:
+            new_x-=5
+        elif random_number == 3:
+            new_y+=5
+        elif random_number == 4:
+            new_y-=5
+        lastrand=random_number
+
+        array_x.append(new_x)
+        array_y.append(new_y)
+
+        if new_x<10 or new_x>90 or new_y<10 or new_y>90:
+            new_x=x
+            new_y=y
+
+        draw.rectangle((new_x,new_y,new_x+5,new_y+5),fill=(random_color_1,random_color_2,random_color_3,random_color_4))
+        i+=1
+    #print(array_x,array_y)
+    img.save('test.png')
+    return array_x,array_y,random_color_array
+
+def parse_xml(file_name):
+    # Parse the XML file
+    x=[]
+    y=[]
+    tree = ET.parse(file_name)
+
+    # Get the root element
+    root = tree.getroot()
+
+    # Find all 'partstitch' elements and print their 'x' and 'y' attributes
+    for partstitch in root.iter('partstitch'):
+        x.append(int(partstitch.get('x')))
+        y.append(int(partstitch.get('y')))
+    print(f'x: {x}, y: {y}')
+    return x,y
+
+def draw_xml_image(x,y):
+    img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
+    draw=ImageDraw.Draw(img)
+    
+    for i in range(len(x)):
+        draw.rectangle((x[i],y[i],x[i]+5,y[i]+5),fill=(255,0,0,255))
+    img.save('test.png')
+
+
+
+if __name__ == '__main__':
+
+    mode="0"
+    while mode!="3":    
+        print("Press 1 to run in random mode or 2 for xml mode")
+        print("Press 3 to exit")
+        mode=input()
+        if mode=="1":
+            count=25
+            seed=3
+            pixel_number=300
+            main(count,seed,pixel_number)
+        elif mode =="2":
+            xml_x,xml_y=parse_xml('tie_fighter.oxs')
+            draw_xml_image(xml_x,xml_y)
+        elif mode=="3":
+            sys.exit()
+        else:
+            print("Invalid input")
+    # i=0
+    # while i<10:
+    #     main(count,i,pixel_number)
+    #     count=random.randint(25,50)
+    #     seed=random.randint(0,100)
+    #     pixel_number=random.randint(100,500)
+    #     i+=1
 
     
-    if lastrand==1 or lastrand==2:
-        random_number=random.randint(3,4)
-    elif lastrand==3 or lastrand==4:
-        random_number=random.randint(1,2)
-    if random_number == 1:
-        new_x+=5
-    elif random_number == 2:
-        new_x-=5
-    elif random_number == 3:
-        new_y+=5
-    elif random_number == 4:
-        new_y-=5
-    lastrand=random_number
-    print(new_x,new_y)
-    if new_x<10 or new_x>90 or new_y<10 or new_y>90:
-        new_x=int_x
-        new_y=int_y
-
-    draw.rectangle((new_x,new_y,new_x+5,new_y+5),fill=(random_color_1,random_color_2,random_color_3,random_color_4))
-    i+=1
-
-img.save('test.png')
