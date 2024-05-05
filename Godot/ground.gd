@@ -1,11 +1,12 @@
 extends Node
+
+
 class_name Ground
 
 const seed =7
 const Grid_size=16.0
 var MIN_NUM_POINTS =0
-const MAX_HEIGHT= 5000
-
+const MAX_HEIGHT= 1000000
 signal end_point_of_line(num)
 var body
 var line
@@ -16,6 +17,7 @@ var line_end
 var collider
 var new_collider
 var origin_point=Vector2(0,0)
+#@onready var left_ship=preload("res://from_left_tie.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	line=$StaticBody2D/Line2D
@@ -24,6 +26,7 @@ func _ready():
 	#get_tree().get_root().connect("size_changed",self, "set_base_level")
 	add_points(Vector2(0,0))
 	body=$StaticBody2D
+	
 func set_base_level():
 	base_level = get_viewport().size.y -Grid_size
 	line.position.y =base_level
@@ -37,7 +40,7 @@ func add_points(pos):
 	while pos.x< MIN_NUM_POINTS or abs(pos.y)>0:
 		origin_point=pos
 		pos.x += Grid_size
-		pos.y += (rng.randi() % 3-1)* Grid_size
+		pos.y += (rng.randi() % 3-1)* Grid_size*2
 		pos.y = clamp(pos.y,-MAX_HEIGHT,0)
 		add_point(pos)
 		print(origin_point, " ",pos)
@@ -75,3 +78,25 @@ func _on_character_body_2d_end_of_the_line():
 	get_children(false)
 
 
+
+
+func _on_character_body_2d_ready():
+	pass # Replace with function body.
+
+
+#func spawn_ship_on_path():
+	#print("tiggered")
+	#
+	#
+	#
+	#var ship_loc=$CharacterBody2D/from_left_path/from_left_spawn
+	#print(ship_loc.position)
+	#var new_ship=left_ship.instantiate()
+	#new_ship.position=Vector2(ship_loc.position[0]+$CharacterBody2D.position[0],$CharacterBody2D.position[1]-400)
+	#print(new_ship.position)
+	#var velocity = Vector2(randf_range(350.0, 450.0), 0.0)
+	#var direction= ship_loc.rotation
+	#new_ship.linear_velocity=velocity.rotated(direction)
+	#add_child(new_ship)
+#func _on_from_left_timer_timeout():
+	#spawn_ship_on_path()
