@@ -46,13 +46,13 @@ func add_points(pos):
 		pos.y = clamp(pos.y,-MAX_HEIGHT,0)
 		
 		if plains_count!=0:
-			mountain_count=randi_range(30,50)
+			mountain_count=randi_range(30,Difficulty.num_of_mountains)
 			origin_point=pos
 			pos.x += Grid_size
 			pos.y += (rng.randi() % 3-1)* Grid_size*2
 			pos.y = clamp(pos.y,-MAX_HEIGHT,0)
 			if pos.y<=-50:
-				pos.y=0
+				pos.y=Difficulty.lowest_point
 				print("lowering the mountain")
 			plains_count=plains_count-1
 		else:	
@@ -62,7 +62,7 @@ func add_points(pos):
 			pos.y += (rng.randi() % 3-1)* Grid_size*10
 			pos.y = clamp(pos.y,-MAX_HEIGHT,0)
 			if mountain_count==0:
-				plains_count= randi_range(70,120)
+				plains_count= randi_range(Difficulty.dif_low,Difficulty.dif_high)
 				print("add more plains")
 				print(plains_count)
 			
@@ -127,4 +127,5 @@ func _on_character_body_2d_ready():
 
 
 func _on_character_body_2d_dead():
+	Difficulty.last_score=$CharacterBody2D/Score.score
 	get_tree().change_scene_to_file("res://intro.tscn")

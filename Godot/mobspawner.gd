@@ -9,11 +9,11 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	
-	if start_height-%CharacterBody2D.position.y<=480:
+	if start_height-%CharacterBody2D.position.y<=900:
 		$from_left_timer.wait_time=2
-	elif start_height-%CharacterBody2D.position.y>=680 and start_height-%CharacterBody2D.position.y<880 :
+	elif start_height-%CharacterBody2D.position.y>=901 and start_height-%CharacterBody2D.position.y<1200 :
 		$from_left_timer.wait_time=1
-	elif start_height-%CharacterBody2D.position.y>=880:
+	elif start_height-%CharacterBody2D.position.y>1200:
 		$from_left_timer.wait_time=.2
 func spawn_ship_on_path():
 	print("tiggered")

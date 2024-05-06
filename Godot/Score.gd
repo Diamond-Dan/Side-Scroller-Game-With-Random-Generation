@@ -1,14 +1,16 @@
-extends Button
+extends RichTextLabel
 
-
+var score=0
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
+	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
-	
-func _pressed():
-	get_tree().change_scene_to_file("res://node_2d.tscn")
+
+
+func _on_timer_timeout():
+	score+=10
+	self.text="Score: "+var_to_str(score)

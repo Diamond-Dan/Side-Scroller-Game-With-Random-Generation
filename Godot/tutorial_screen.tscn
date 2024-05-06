@@ -27,13 +27,15 @@ texture = ExtResource("1_ps72t")
 self_modulate = Color(1, 1, 0.639216, 1)
 top_level = true
 visibility_layer = 7
-offset_left = 352.0
-offset_top = 116.0
-offset_right = 852.0
-offset_bottom = 656.0
+offset_left = 346.0
+offset_top = 105.0
+offset_right = 846.0
+offset_bottom = 645.0
 theme = ExtResource("2_6tc7e")
 theme_override_font_sizes/normal_font_size = 21
 text = "Tutorial: Dodge the asteroids! You must skim the surface of the planet dodging the asteroids that fall! The green bar is your ships health. When it is depleted your ship will be destroyed!
+
+The higher you fly the more asteroids will appear!
 
 Use the arrow keys to move. Pressing the right arrow key will make you move faster, pressing the left will slow you down. Other Arrow keys will move you up or down.
 
@@ -52,10 +54,10 @@ text = "Tutorial"
 fit_content = true
 
 [node name="Button" type="Button" parent="CanvasLayer"]
-offset_left = 310.0
-offset_top = 452.0
-offset_right = 559.0
-offset_bottom = 521.745
+offset_left = 297.0
+offset_top = 511.0
+offset_right = 546.0
+offset_bottom = 580.745
 scale = Vector2(2.37264, 2.42601)
 text = "Press to Go Back to main Menu"
 script = ExtResource("3_16yw0")
