@@ -1,6 +1,7 @@
 extends CharacterBody2D
 @export var speed = 400
 signal end_of_the_line
+signal dead
 var line_end
 
 	
@@ -10,6 +11,8 @@ func get_input():
 	#print(input_direction[0])
 	if(input_direction[0]==-1):
 		velocity = (input_direction*-1) * speed/4
+		
+		
 	elif(input_direction[0]==1):
 		velocity = input_direction * (speed*1)
 	else:
@@ -17,7 +20,10 @@ func get_input():
 		velocity =input_direction *speed
 func _physics_process(delta):
 	get_input()
-	move_and_slide()
+	var collide_info= move_and_slide()
+	if collide_info==true:
+		lose_life()
+	
 	if position.x>=(line_end-1000):
 		end_of_the_line.emit()
 	
@@ -25,3 +31,9 @@ func _physics_process(delta):
 
 func _on_node_2d_end_point_of_line(num):
 	line_end=num # Replace with function body.
+
+func lose_life():
+	#print($MarginContainer/TextureProgressBar.value)
+	$MarginContainer/TextureProgressBar.value-=1
+	if($MarginContainer/TextureProgressBar.value<=0):
+		dead.emit()

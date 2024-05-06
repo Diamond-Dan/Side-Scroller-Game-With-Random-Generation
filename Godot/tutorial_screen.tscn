@@ -1,0 +1,61 @@
+[gd_scene load_steps=4 format=3 uid="uid://c2qvlhph65wli"]
+
+[ext_resource type="Texture2D" uid="uid://54brxxtwtfx4" path="res://assets/background.png" id="1_ps72t"]
+[ext_resource type="Theme" uid="uid://c0l6lyvo8lxkx" path="res://text.tres" id="2_6tc7e"]
+[ext_resource type="Script" path="res://tutbutton.gd" id="3_16yw0"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("1_ps72t")
+
+[node name="TextureRect2" type="TextureRect" parent="CanvasLayer"]
+modulate = Color(0, 0.301961, 0.239216, 1)
+self_modulate = Color(0.137255, 0.196078, 0.223529, 1)
+offset_left = 335.0
+offset_top = 101.0
+offset_right = 1615.0
+offset_bottom = 821.0
+scale = Vector2(0.4, 0.72)
+texture = ExtResource("1_ps72t")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer"]
+self_modulate = Color(1, 1, 0.639216, 1)
+top_level = true
+visibility_layer = 7
+offset_left = 352.0
+offset_top = 116.0
+offset_right = 852.0
+offset_bottom = 656.0
+theme = ExtResource("2_6tc7e")
+theme_override_font_sizes/normal_font_size = 21
+text = "Tutorial: Dodge the asteroids! You must skim the surface of the planet dodging the asteroids that fall! The green bar is your ships health. When it is depleted your ship will be destroyed!
+
+Use the arrow keys to move. Pressing the right arrow key will make you move faster, pressing the left will slow you down. Other Arrow keys will move you up or down.
+
+If you hit the ground or an asteroid hits you then you will lose health. When your health drops to zero you will have to restart! You score points points the longer you survive!
+"
+fit_content = true
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="CanvasLayer"]
+offset_left = 463.0
+offset_top = 32.0
+offset_right = 763.0
+offset_bottom = 132.0
+theme = ExtResource("2_6tc7e")
+theme_override_font_sizes/normal_font_size = 81
+text = "Tutorial"
+fit_content = true
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+offset_left = 310.0
+offset_top = 452.0
+offset_right = 559.0
+offset_bottom = 521.745
+scale = Vector2(2.37264, 2.42601)
+text = "Press to Go Back to main Menu"
+script = ExtResource("3_16yw0")

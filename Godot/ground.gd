@@ -17,6 +17,8 @@ var line_end
 var collider
 var new_collider
 var origin_point=Vector2(0,0)
+var mountain_count=0
+var plains_count=50
 #@onready var left_ship=preload("res://from_left_tie.tscn")
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -42,8 +44,30 @@ func add_points(pos):
 		pos.x += Grid_size
 		pos.y += (rng.randi() % 3-1)* Grid_size*2
 		pos.y = clamp(pos.y,-MAX_HEIGHT,0)
+		
+		if plains_count!=0:
+			mountain_count=randi_range(30,50)
+			origin_point=pos
+			pos.x += Grid_size
+			pos.y += (rng.randi() % 3-1)* Grid_size*2
+			pos.y = clamp(pos.y,-MAX_HEIGHT,0)
+			if pos.y<=-50:
+				pos.y=0
+				print("lowering the mountain")
+			plains_count=plains_count-1
+		else:	
+			mountain_count=mountain_count-1
+			origin_point=pos
+			pos.x += Grid_size
+			pos.y += (rng.randi() % 3-1)* Grid_size*10
+			pos.y = clamp(pos.y,-MAX_HEIGHT,0)
+			if mountain_count==0:
+				plains_count= randi_range(70,120)
+				print("add more plains")
+				print(plains_count)
+			
 		add_point(pos)
-		print(origin_point, " ",pos)
+		print(origin_point, " ",pos.y)
 		spawn_new_collider(pos,origin_point)
 	print("End Pos %d flats %d" % [pos.x, flats.size()])
 	line_end=pos.x
@@ -100,3 +124,7 @@ func _on_character_body_2d_ready():
 	#add_child(new_ship)
 #func _on_from_left_timer_timeout():
 	#spawn_ship_on_path()
+
+
+func _on_character_body_2d_dead():
+	get_tree().change_scene_to_file("res://intro.tscn")

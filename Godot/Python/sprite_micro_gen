@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 from PIL import Image, ImageDraw
 
 
-def main(frames,seed,pixel_number,mode,wiggle,xml):
+def main(frames,seed,pixel_number,mode,wiggle,xml,pixel_size):
     int_x=10
     int_y=10
     filename=[]
@@ -20,7 +20,7 @@ def main(frames,seed,pixel_number,mode,wiggle,xml):
     # print("testing")
     # print(cur_file_loc+"\\gifs")
     for i in range(frames):
-       name=draw_image_guided(guide_array_x,guide_array_y,color_array,i,wiggle)
+       name=draw_image_guided(guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size)
        filename.append(name)
     
     images = []
@@ -32,23 +32,33 @@ def main(frames,seed,pixel_number,mode,wiggle,xml):
 
     imageio.mimsave(cur_file_loc+"\\gifs\\movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif", images,'GIF',disposal=2,loop=0)
 
-def draw_image_guided(guide_array_x,guide_array_y,color_array,frame_num,wiggle):
+def image_saver(img):
+    filecount=0
+    name=""
+    cur_file_loc=os.path.dirname(os.path.realpath(__file__))
+    while os.path.isfile("random_img"+str(filecount)+".png"):
+        filecount+=1
+        name="random_img"+str(filecount)+".png"
+    img.save("random_img"+str(filecount)+".png")
+    return name
+
+def draw_image_guided(guide_array_x,guide_array_y,color_array,frame_num,wiggle,pixel_size):
     img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
     draw=ImageDraw.Draw(img)
     for i in range(len(guide_array_x)):
-        new_x=guide_array_x[i]+(frame_num+random.randint(-wiggle,wiggle))
-        new_y=guide_array_y[i]+(frame_num+random.randint(-wiggle,wiggle))
+        new_x=guide_array_x[i]+(random.randint(-wiggle,wiggle))
+        new_y=guide_array_y[i]+(random.randint(-wiggle,wiggle))
         if new_x<10:
-            new_x+=25
+            new_x+=10
         if new_x>90:
-            new_x-=25
+            new_x-=10
         if new_y<10:
-            new_y+=25
+            new_y+=10
         if new_y>90:
-            new_y-=25
-        draw.rectangle((new_x,new_y,new_x+5,new_y+5),fill=(color_array[i*4],color_array[i*4+1],color_array[i*4+2],color_array[i*4+3]))
-    name="test"+str(frame_num)+".png"
-    img.save(name)
+            new_y-=10
+        draw.rectangle((new_x,new_y,new_x+pixel_size,new_y+pixel_size),fill=(color_array[i*4],color_array[i*4+1],color_array[i*4+2],color_array[i*4+3]))
+    
+    name=image_saver(img)
     return name
 
 
@@ -112,14 +122,18 @@ def draw_random_image_intial(x,y,seed,pixel_number):
         draw.rectangle((new_x,new_y,new_x+5,new_y+5),fill=(random_color_1,random_color_2,random_color_3,random_color_4))
         i+=1
     #print(array_x,array_y)
-    img.save('test.png')
+   
+    image_saver(img)
     return array_x,array_y,random_color_array
 
 def parse_xml(file_name):
     # Parse the XML file
     x=[]
     y=[]
-    tree = ET.parse(file_name)
+    current_file_path = os.path.dirname(os.path.realpath(__file__))
+
+    file_name_loc=current_file_path+'\\patterns\\'+file_name
+    tree = ET.parse(file_name_loc)
     
     # Get the root element
     root = tree.getroot()
@@ -130,26 +144,28 @@ def parse_xml(file_name):
     random_color_4=random.randint(0,255)
     random_color_array=[random_color_1,random_color_2,random_color_3,random_color_4]
     # Find all 'partstitch' elements and print their 'x' and 'y' attributes
-    for partstitch in root.iter('partstitch'):
-        x.append(int(partstitch.get('x')))
-        y.append(int(partstitch.get('y')))
-        random_color_1+=random.randint(-1,1)
-        random_color_2+=random.randint(-1,1)
-        random_color_3+=random.randint(-1,1)
-        random_color_4+=random.randint(-1,1)
-        random_color_array.append(random_color_1)
-        random_color_array.append(random_color_2) 
-        random_color_array.append(random_color_3)
-        random_color_array.append(random_color_4)
-        if random_color_1<=0 or random_color_1>=255:
-            random_color_1=255
-        if random_color_2<=0 or random_color_2>=255:
-            random_color_2=0
-        if random_color_3<=0 or random_color_3>=255:
-            random_color_3=0
-        if random_color_4<=0 or random_color_4>=255:
-            random_color_4=255
-    print(f'x: {x}, y: {y}')
+    for partstitch in root.iter():
+        if (partstitch.tag=='partstitch' or partstitch.tag=='stitch') and partstitch.get('x')!=None and partstitch.get('y')!=None:
+            print(partstitch.get('x'), partstitch.get('y'))
+            x.append(int(partstitch.get('x')))
+            y.append(int(partstitch.get('y')))
+            random_color_1+=random.randint(-1,1)
+            random_color_2+=random.randint(-1,1)
+            random_color_3+=random.randint(-1,1)
+            random_color_4+=random.randint(-1,1)
+            random_color_array.append(random_color_1)
+            random_color_array.append(random_color_2) 
+            random_color_array.append(random_color_3)
+            random_color_array.append(random_color_4)
+            if random_color_1<=0 or random_color_1>=255:
+                random_color_1=255
+            if random_color_2<=0 or random_color_2>=255:
+                random_color_2=0
+            if random_color_3<=0 or random_color_3>=255:
+                random_color_3=0
+            if random_color_4<=0 or random_color_4>=255:
+                random_color_4=255
+    # print(f'x: {x}, y: {y}')
     return x,y,random_color_array
 
 def draw_xml_image(x,y):
@@ -158,7 +174,7 @@ def draw_xml_image(x,y):
     
     for i in range(len(x)):
         draw.rectangle((x[i],y[i],x[i]+5,y[i]+5),fill=(255,0,0,255))
-    img.save('test.png')
+    image_saver(img)
 
 
 
@@ -170,15 +186,16 @@ if __name__ == '__main__':
     pixel_number=300
     wiggle=1
     xml='tie_fighter.oxs'
+    pixel_size=5
     while True:    
         print("Press 1 to run in random mode or 2 for xml mode, 3 for drawing settings, 4 to set xml file")
         print("Press e to exit")
         
         mode=input()
         if mode=="1":
-            main(count,seed,pixel_number,mode,wiggle.xml)
+            main(count,seed,pixel_number,mode,wiggle,xml,pixel_size)
         elif mode =="2":
-            main(count,seed,pixel_number,mode,wiggle,xml)
+            main(count,seed,pixel_number,mode,wiggle,xml,pixel_size)
         elif mode=="3":
             print("Enter the number of frames, current frames is "+str(count))
             count=int(input())
@@ -188,9 +205,15 @@ if __name__ == '__main__':
             pixel_number=int(input())
             print("Enter the wiggle, current wiggle is "+str(wiggle))
             wiggle=int(input())
+            print("Enter the pixel size, current pixel size is "+str(pixel_size))
+            pixel_size=int(input())
         elif mode=="4":
             print("Enter the xml file name with extension, likely .oxs")
             xml=input()
+            current_file_path = os.path.dirname(os.path.realpath(__file__))
+            if not os.path.isfile(current_file_path+'\\patterns\\' + xml):
+                print(f"The file 'patterns/{xml}' does not exist.")
+    
         elif mode=="e":
             sys.exit()
         else:
