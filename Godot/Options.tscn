@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://wpi0vp3c1vkn"]
+
+[ext_resource type="Theme" uid="uid://c0l6lyvo8lxkx" path="res://text.tres" id="1_oyygy"]
+[ext_resource type="Script" path="res://Moutains_Button.gd" id="2_jutn7"]
+[ext_resource type="Script" path="res://return_button.gd" id="3_q4pt3"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Title" type="RichTextLabel" parent="."]
+offset_left = 436.0
+offset_top = 23.0
+offset_right = 736.0
+offset_bottom = 81.32
+theme = ExtResource("1_oyygy")
+theme_override_font_sizes/normal_font_size = 41
+text = "Options"
+
+[node name="Option 1 title" type="RichTextLabel" parent="."]
+offset_left = 163.0
+offset_top = 81.0
+offset_right = 963.0
+offset_bottom = 181.0
+theme = ExtResource("1_oyygy")
+theme_override_font_sizes/normal_font_size = 31
+text = "Press the button below to adjust the number of mountains you encounter. This will increase the difficulty"
+
+[node name="Moutains_Button" type="Button" parent="."]
+custom_minimum_size = Vector2(300, 100)
+offset_left = 385.0
+offset_top = 178.0
+offset_right = 685.0
+offset_bottom = 278.0
+text = "Normal Moutains"
+script = ExtResource("2_jutn7")
+
+[node name="return_button" type="Button" parent="."]
+offset_left = 457.0
+offset_top = 299.0
+offset_right = 615.0
+offset_bottom = 330.0
+text = "Back to main menu"
+script = ExtResource("3_q4pt3")
