@@ -37,7 +37,7 @@ text = "Tutorial: Dodge the asteroids! You must skim the surface of the planet d
 
 The higher you fly the more asteroids will appear!
 
-Use the arrow keys to move. Pressing the right arrow key will make you move faster, pressing the left will slow you down. Other Arrow keys will move you up or down.
+Use the arrow keys or WASD to move. Pressing the right arrow key or D will make you move faster, pressing the left or A will slow you down. Up and down Arrow keys or W or S, will move you up or down.
 
 If you hit the ground or an asteroid hits you then you will lose health. When your health drops to zero you will have to restart! You score points points the longer you survive!
 "
@@ -54,10 +54,10 @@ text = "Tutorial"
 fit_content = true
 
 [node name="Button" type="Button" parent="CanvasLayer"]
-offset_left = 297.0
-offset_top = 511.0
-offset_right = 546.0
-offset_bottom = 580.745
-scale = Vector2(2.37264, 2.42601)
+offset_left = 449.0
+offset_top = 533.0
+offset_right = 698.0
+offset_bottom = 602.745
+scale = Vector2(1.04318, 1.10503)
 text = "Press to Go Back to main Menu"
 script = ExtResource("3_16yw0")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://hgsbqqn6aaj1"]
+[gd_scene load_steps=16 format=3 uid="uid://hgsbqqn6aaj1"]
 
 [ext_resource type="Script" path="res://ground.gd" id="1_7l2c1"]
 [ext_resource type="Script" path="res://player.gd" id="2_d6scy"]
@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://cyfof28amltdr" path="res://assets/lifebar_fill.png" id="7_0t158"]
 [ext_resource type="Script" path="res://healthbar.gd" id="8_375en"]
 [ext_resource type="Script" path="res://Score.gd" id="9_bb3xa"]
+[ext_resource type="Script" path="res://MenuBar.gd" id="10_8uxdk"]
+[ext_resource type="Theme" uid="uid://c0l6lyvo8lxkx" path="res://text.tres" id="11_j31hx"]
 [ext_resource type="Script" path="res://mobspawner.gd" id="12_5irga"]
 [ext_resource type="Script" path="res://from_left_timer.gd" id="13_82f0t"]
 
@@ -97,6 +99,33 @@ script = ExtResource("9_bb3xa")
 wait_time = 0.2
 autostart = true
 
+[node name="MenuBar" type="MenuBar" parent="CharacterBody2D"]
+modulate = Color(0.792157, 1, 0.568627, 1)
+offset_left = 92.0
+offset_top = -16.0
+offset_right = 132.0
+offset_bottom = 24.0
+script = ExtResource("10_8uxdk")
+
+[node name="MenuButton" type="MenuButton" parent="CharacterBody2D/MenuBar"]
+offset_left = -538.0
+offset_top = -300.0
+offset_right = -388.0
+offset_bottom = -269.0
+disabled = true
+button_mask = 0
+text = "Press Esc to pause"
+
+[node name="quit_but" type="Button" parent="CharacterBody2D/MenuBar"]
+visible = false
+layout_mode = 0
+offset_left = -86.0
+offset_top = 67.0
+offset_right = 284.0
+offset_bottom = 98.0
+theme = ExtResource("11_j31hx")
+text = "Click here to Quit or press ESC to continue"
+
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(2, -603)
 
@@ -116,3 +145,4 @@ texture = ExtResource("4_uy7uw")
 [connection signal="timeout" from="CharacterBody2D/from_left_path/from_left_timer" to="." method="_on_from_left_timer_timeout"]
 [connection signal="timeout" from="CharacterBody2D/from_left_path/from_left_timer" to="CharacterBody2D/from_left_path" method="_on_from_left_timer_timeout"]
 [connection signal="timeout" from="CharacterBody2D/Score/Timer" to="CharacterBody2D/Score" method="_on_timer_timeout"]
+[connection signal="pressed" from="CharacterBody2D/MenuBar/quit_but" to="CharacterBody2D/MenuBar" method="_on_quit_but_pressed"]
