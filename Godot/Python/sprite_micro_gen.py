@@ -12,6 +12,8 @@ def main(start_x,start_y,frames,seed,pixel_number,mode,wiggle,xml,pixel_size,fil
     int_y=start_y
     filename=[]
     filename_2=[]
+    server_file_wiggle_name=[]
+    server_file_explode_name=[]
     cur_file_loc=os.path.dirname(os.path.realpath(__file__))
     filecount=0
     if mode=="1":
@@ -22,59 +24,47 @@ def main(start_x,start_y,frames,seed,pixel_number,mode,wiggle,xml,pixel_size,fil
         guide_array_x,guide_array_y,color_array=draw_planet(int_x,int_y,seed,pixel_number,file_name, pixel_size)
     
     for i in range(frames):
-       name=draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name)
+       name,server_name=draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name)
        filename.append(name)
+       server_file_wiggle_name.append(server_name)
     for i in range(frames):
-        name_2=draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name)
+        name_2,server_name=draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name)
         filename_2.append(name_2)
-    gif_maker(filename,cur_file_loc,seed,pixel_number,frames,filecount)
-    gif_maker(filename_2,cur_file_loc,seed,pixel_number,frames,filecount)
+        server_file_explode_name.append(server_name)
+    gif_loc_1=gif_maker(filename,cur_file_loc,seed,pixel_number,frames,filecount)
+    gif_loc_2=gif_maker(filename_2,cur_file_loc,seed,pixel_number,frames,filecount)
     if server_mode==True:
-        return filename,filename_2
+        return server_file_wiggle_name,server_file_explode_name,gif_loc_1,gif_loc_2
 
 def gif_maker(filename,cur_file_loc,seed,pixel_number,frames,filecount):
     images = []
     for i in range(len(filename)):  
-        images.append(imageio.imread(cur_file_loc+"\\images\\"+filename[i]))
+        images.append(imageio.imread(filename[i]))
 
     gif_name = cur_file_loc+"\\gifs\\movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
+    server_gif_name="movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
     while os.path.isfile(gif_name):
         filecount+=1
         gif_name = cur_file_loc+"\\gifs\\movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
-
+        server_gif_name="movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
     imageio.mimsave(gif_name, images,'GIF',disposal=2,loop=0)
-    return gif_name
+    
+    while os.path.isfile(server_gif_name):
+        filecount+=1
+        server_gif_name="movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
+    return server_gif_name
 
 
-
-# def gif_maker(filename,cur_file_loc,seed,pixel_number,frames,filecount):
-#     images = []
-#     for i in range(len(filename)):  
-#         images.append(imageio.imread(cur_file_loc+"\\images\\"+filename[i]))
-
-#     while os.path.isfile(cur_file_loc+"\\gifs\\movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"):
-#         filecount+=1
-
-#     imageio.mimsave(cur_file_loc+"\\gifs\\movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif", images,'GIF',disposal=2,loop=0)
-
-#     # images = []
-#     # gif_name=cur_file_loc+"\\gifs\\movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
-#     # for i in range(len(filename)):  
-#     #     images.append(imageio.imread(cur_file_loc+"\\images\\"+filename[i]))
-
-#     # while os.path.isfile(gif_name):
-#     #     filecount+=1
-
-#     # imageio.mimsave(gif_name, images,'GIF',disposal=2,loop=0)
 def image_saver(img,file_name):
     filecount=0
     name=""
     cur_file_loc=os.path.dirname(os.path.realpath(__file__))
     while os.path.isfile(cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png"):
         filecount+=1
-        name=file_name+str(filecount)+".png"
+        name=cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png"
+        server_name=file_name+str(filecount)+".png"
     img.save(cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png")
-    return name
+    return name,server_name
 
 def draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,frame_num,wiggle,pixel_size,file_name):
     img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
@@ -92,8 +82,8 @@ def draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,frame_num,w
             new_y-=10
         draw.rectangle((new_x,new_y,new_x+pixel_size,new_y+pixel_size),fill=(color_array[i*4],color_array[i*4+1],color_array[i*4+2],color_array[i*4+3]))
     file_name=file_name+"_wiggle"
-    name=image_saver(img,file_name)
-    return name
+    name,server_name=image_saver(img,file_name)
+    return name,server_name
 
 
 def draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_array,frame_num,wiggle,pixel_size,file_name):
@@ -122,8 +112,8 @@ def draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_arra
             new_y=guide_array_y[i] 
         draw.rectangle((new_x,new_y,new_x+pixel_size,new_y+pixel_size),fill=(color_array[i*4],color_array[i*4+1],color_array[i*4+2],color_array[i*4+3]))
     file_name=file_name+"_explode"
-    name=image_saver(img,file_name)
-    return name
+    name,server_name=image_saver(img,file_name)
+    return name,server_name
 def draw_random_image_intial(x,y,seed,pixel_number,file_name,pixel_size):
     array_x=[x]
     array_y=[y]
@@ -208,7 +198,7 @@ def parse_xml(xml_file_name, file_name):
     # Find all 'partstitch' elements and print their 'x' and 'y' attributes
     for partstitch in root.iter():
         if (partstitch.tag=='partstitch' or partstitch.tag=='stitch') and partstitch.get('x')!=None and partstitch.get('y')!=None:
-            print(partstitch.get('x'), partstitch.get('y'))
+            # print(partstitch.get('x'), partstitch.get('y'))
             x.append(int(partstitch.get('x')))
             y.append(int(partstitch.get('y')))
             random_color_1+=random.randint(-1,1)
