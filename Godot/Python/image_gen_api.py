@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, Blueprint
+from flask import Flask, jsonify, Blueprint, request, abort
 import random
 import os
 import sprite_micro_gen
@@ -10,8 +10,8 @@ app.register_blueprint(images_blueprint)
 # Create a blueprint for the second static folder
 gifs_blueprint = Blueprint('gifs', __name__, static_folder='gifs', static_url_path='/gifs')
 app.register_blueprint(gifs_blueprint)
-@app.route('/generate_images')
-def generate_images():
+@app.route('/generate_random_images', methods=['GET'])
+def generate_random_images():
     # Call the main function
     start_x = random.randint(40, 70)
     start_y = random.randint(40, 70)
@@ -39,5 +39,83 @@ def generate_images():
         print(f'{name}: {url}')
     # Return the image URLs in the API response
     return jsonify(image_urls)
+
+
+@app.route('/generate_images_criteria', methods=['POST'])
+def generate_images_criteria():
+    # get data
+    data = request.get_json()
+
+    start_x = data.get('start_x')
+    start_y = data.get('start_y')
+    frames = data.get('frames')
+    seed = data.get('seed')
+    pixel_number = data.get('pixel_number')
+    mode = data.get('mode')
+    wiggle = data.get('wiggle')
+    xml = data.get('xml')
+    pixel_size = data.get('pixel_size')
+    file_name = data.get('file_name')
+
+    #check values
+    if not data:
+        abort(400, description="No data provided")
+    
+    keys = ['start_x', 'start_y', 'frames', 'seed', 'pixel_number', 'mode', 'wiggle', 'xml', 'pixel_size', 'file_name']
+
+
+
+    if not all(key in data for key in keys):
+        abort(400, description="Missing data fields")
+
+    if any(data[key] is None for key in keys):
+        abort(400, description="One or more fields have None values")   
+
+    if start_x < 0 or start_x > 100:
+        abort(400, description="start_x must be between 0 and 100")
+    if start_y < 0 or start_y > 100:
+        abort(400, description="start_y must be between 0 and 100")
+    
+    if frames < 1 or frames > 30:
+        abort(400, description="frames must be between 1 and 30")
+
+    if pixel_number < 100 or pixel_number > 500:
+        abort(400, description="pixel_number must be between 100 and 500")
+    
+    if mode not in ['1','2','3']:
+        abort(400, description="mode must be 1, 2 or 3")
+    
+    if wiggle < 1 or wiggle > 10:
+        abort(400, description="wiggle must be between 1 and 10")
+    
+    if pixel_size < 1 or pixel_size > 5:
+        abort(400, description="pixel_size must be between 1 and 5")
+
+    if not os.path.exists(xml):
+        abort(400, description="xml file does not exist")
+    
+    if not file_name:
+        abort(400, description="file_name cannot be empty")
+
+
+
+
+    filename,filename_2,gif_loc_1,gif_loc_2=sprite_micro_gen.main(start_x, start_y, frames, seed, pixel_number, mode, wiggle, xml, pixel_size, file_name,server_mode=True)
+    print(filename,filename_2,gif_loc_1,gif_loc_2)
+    # Create URLs for each image file
+    image_urls = {
+        'gif_loc_1': 'http://localhost:5000/gifs/' + gif_loc_1.replace("\\", "/"),
+        'gif_loc_2': 'http://localhost:5000/gifs/' + gif_loc_2.replace("\\", "/")
+    }
+    for i, name in enumerate(filename, start=1):
+        image_urls[f'filename_{i}'] = f'http://localhost:5000/images/{name}'.replace("\\", "/")
+    for i, name in enumerate(filename_2, start=1):
+        image_urls[f'filename_2_{i}'] = f'http://localhost:5000/images/{name}'.replace("\\", "/")
+  
+    for name, url in image_urls.items():
+        print(f'{name}: {url}')
+    # Return the image URLs in the API response
+    return jsonify(image_urls)
+
 if __name__ == '__main__':
     app.run(debug=True)
