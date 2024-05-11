@@ -58,11 +58,17 @@ def gif_maker(filename,cur_file_loc,seed,pixel_number,frames,filecount):
 def image_saver(img,file_name):
     filecount=0
     name=""
+    server_name=""
     cur_file_loc=os.path.dirname(os.path.realpath(__file__))
     while os.path.isfile(cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png"):
         filecount+=1
         name=cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png"
         server_name=file_name+str(filecount)+".png"
+        print(server_name)
+    # while os.path.isfile(cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png"):
+    #     filecount+=1
+    #     server_name=file_name+str(filecount)+".png"
+    #     print(server_name)
     img.save(cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png")
     return name,server_name
 
