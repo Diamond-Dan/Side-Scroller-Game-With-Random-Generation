@@ -4,6 +4,7 @@ import imageio.v2  as imageio
 import os
 import sys
 import xml.etree.ElementTree as ET
+import glob
 from PIL import Image, ImageDraw
 
 
@@ -38,15 +39,17 @@ def main(start_x,start_y,frames,seed,pixel_number,mode,wiggle,xml,pixel_size,fil
 
 def gif_maker(filename,cur_file_loc,seed,pixel_number,frames,filecount):
     images = []
+    
     for i in range(len(filename)):  
-        images.append(imageio.imread(filename[i]))
+        if filename[i]!="":
+            images.append(imageio.imread(filename[i]))
 
     gif_name = cur_file_loc+"\\gifs\\movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
     server_gif_name="movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
     while os.path.isfile(gif_name):
         filecount+=1
         gif_name = cur_file_loc+"\\gifs\\movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
-        server_gif_name="movie_"+"seed_"+str(seed)+"pixel_"+str(pixel_number)+"frames_"+str(frames)+str(filecount)+".gif"
+        
     imageio.mimsave(gif_name, images,'GIF',disposal=2,loop=0)
     
     while os.path.isfile(server_gif_name):
@@ -280,7 +283,7 @@ if __name__ == '__main__':
     wiggle=1
     xml='tie_fighter.oxs'
     pixel_size=1
-    file_name="random_img"
+    file_name="asteroid"
     server_mode=False
     while True:    
         print("Press 1 to run in random mode or 2 for xml mode,press 3 to draw a planet, 4 for drawing settings, 4 to set xml file")

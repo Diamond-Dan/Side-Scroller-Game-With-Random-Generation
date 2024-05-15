@@ -31,6 +31,7 @@ func _on_request_completed(result, response_code, headers, body):
 	
 	print(json)
 #too doo: loop thorough JSON and assign sprites
+#put a sprit on the front page with the gif we jsut generated, asseng from_left and instatiate it
 func _exit_tree():
 	var dir = DirAccess.open("res://Python//Images")
 	if dir:
