@@ -26,11 +26,13 @@ def main(start_x,start_y,frames,seed,pixel_number,mode,wiggle,xml,pixel_size,fil
     
     for i in range(frames):
        name,server_name=draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name)
-       filename.append(name)
+       if server_name!="":
+        filename.append(name)
        server_file_wiggle_name.append(server_name)
     for i in range(frames):
         name_2,server_name=draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name)
-        filename_2.append(name_2)
+        if server_name!="":
+            filename_2.append(name_2)
         server_file_explode_name.append(server_name)
     gif_loc_1=gif_maker(filename,cur_file_loc,seed,pixel_number,frames,filecount)
     gif_loc_2=gif_maker(filename_2,cur_file_loc,seed,pixel_number,frames,filecount)
@@ -73,6 +75,7 @@ def image_saver(img,file_name):
     #     server_name=file_name+str(filecount)+".png"
     #     print(server_name)
     img.save(cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png")
+    
     return name,server_name
 
 def draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,frame_num,wiggle,pixel_size,file_name):
