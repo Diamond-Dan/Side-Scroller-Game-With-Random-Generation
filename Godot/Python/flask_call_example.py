@@ -1,27 +1,37 @@
-from flask import Flask, jsonify
 import requests
+import webbrowser
+#url to requset from
+url = "http://localhost:5000/generate_images_criteria"
 
-app = Flask(__name__)
-@app.route('/call_image_gen_api')
-def call_image_gen_api():
-    # Make a GET request to the /generate_images route of the image_gen_api.py application
-    response = requests.get('http://localhost:5000/generate_images')
+# Define the data to send
+data = {
+    'start_x' : 50,
+	'start_y' : 50,
+	'frames' : 10,
+	'seed' : 3,
+	'pixel_number' : 100,
+	'mode' : "2",
+	'wiggle' :3,
+	'xml' :'tie_fighter.oxs',
+	'pixel_size' : 2,
+	'file_name' : "asteroid"
+}
 
-    # Check if the request was successful
-    if response.status_code == 200:
-        # Get the image URLs from the response
-        image_urls = response.json()
 
-        # Print the image URLs to the terminal
-        for name, url in image_urls.items():
-            print(f'{name}: {url}')
+response = requests.post(url, json=data)
 
-        # Return the image URLs in the API response
-        return jsonify(image_urls)
 
-    else:
-        # If the request was not successful, return an error message
-        return jsonify({'error': 'Could not generate images'})
+print("GENERATING GUIDED IMAGES\n \n")
+#json with list of urls
+print(response.json())
+#auto open windows from json
+for url in response.json().values():
+    webbrowser.open_new(url)
+#url to requset from
+url2 ="http://localhost:5000/generate_random_images"
 
-if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+
+response2 = requests.post(url2)
+print("GENERATING RANDOM IMAGES\n \n")
+#json with list of urls
+print(response2.json())

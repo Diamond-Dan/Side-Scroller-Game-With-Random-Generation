@@ -10,7 +10,7 @@ app.register_blueprint(images_blueprint)
 # Create a blueprint for the second static folder
 gifs_blueprint = Blueprint('gifs', __name__, static_folder='gifs', static_url_path='/gifs')
 app.register_blueprint(gifs_blueprint)
-@app.route('/generate_random_images', methods=['GET'])
+@app.route('/generate_random_images', methods=['POST'])
 def generate_random_images():
     # Call the main function
     start_x = random.randint(40, 70)
@@ -22,9 +22,10 @@ def generate_random_images():
     wiggle = random.randint(1,5)
     xml = 'tie_fighter.oxs'
     pixel_size = random.randint(1, 5)
-    file_name = "server_image"
+    file_name = "random_image"
     filename,filename_2,gif_loc_1,gif_loc_2=sprite_micro_gen.main(start_x, start_y, frames, seed, pixel_number, mode, wiggle, xml, pixel_size, file_name,server_mode=True)
-
+    filename.pop(0)
+    filename_2.pop(0)
     # Create URLs for each image file
     image_urls = {
         'gif_loc_1': 'http://localhost:5000/gifs/' + gif_loc_1.replace("\\", "/"),
@@ -122,4 +123,4 @@ def generate_images_criteria():
     return jsonify(image_urls)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5000,debug=True)
