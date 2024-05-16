@@ -40,4 +40,8 @@ Communication Contract
 
     You can parse the json for 'gif_loc_2:' and get back the address for the file.
 
+UML Sequence:
+
+
+![image](https://github.com/Diamond-Dan/361_project/assets/27791262/4b62b506-df23-4c54-a07e-81778e891067)
 
