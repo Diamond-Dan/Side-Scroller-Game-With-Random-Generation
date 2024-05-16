@@ -108,6 +108,7 @@ offset_bottom = 24.0
 script = ExtResource("10_8uxdk")
 
 [node name="MenuButton" type="MenuButton" parent="CharacterBody2D/MenuBar"]
+layout_mode = 0
 offset_left = -538.0
 offset_top = -300.0
 offset_right = -388.0
