@@ -60,6 +60,7 @@ def generate_images_criteria():
 
     #check values
     if not data:
+        print("No data provided")
         abort(400, description="No data provided")
     
     keys = ['start_x', 'start_y', 'frames', 'seed', 'pixel_number', 'mode', 'wiggle', 'xml', 'pixel_size', 'file_name']
@@ -67,33 +68,45 @@ def generate_images_criteria():
 
 
     if not all(key in data for key in keys):
+        print("Missing data fields")
         abort(400, description="Missing data fields")
 
     if any(data[key] is None for key in keys):
+        print("One or more fields have None values")
         abort(400, description="One or more fields have None values")   
 
     if start_x < 0 or start_x > 100:
+        print("start_x must be between 0 and 100")
         abort(400, description="start_x must be between 0 and 100")
     if start_y < 0 or start_y > 100:
+        print("start_y must be between 0 and 100")
         abort(400, description="start_y must be between 0 and 100")
     
     if frames < 1 or frames > 30:
+        print("frames must be between 1 and 30")
         abort(400, description="frames must be between 1 and 30")
 
     if pixel_number < 100 or pixel_number > 500:
+        print("pixel_number must be between 100 and 500")
         abort(400, description="pixel_number must be between 100 and 500")
     
     if mode not in ['1','2','3']:
+        print("mode must be 1, 2 or 3")
         abort(400, description="mode must be 1, 2 or 3")
     
     if wiggle < 1 or wiggle > 10:
+        print("wiggle must be between 1 and 10")
         abort(400, description="wiggle must be between 1 and 10")
     
     if pixel_size < 1 or pixel_size > 5:
+        print("pixel_size must be between 1 and 5")
         abort(400, description="pixel_size must be between 1 and 5")
-
-    if not os.path.exists(xml):
+    curfile = os.path.dirname(os.path.realpath(__file__))
+    print(curfile)
+    if not os.path.isfile(curfile+'\\patterns\\'+xml):
+        print("xml file does not exist")
         abort(400, description="xml file does not exist")
+       
     
     if not file_name:
         abort(400, description="file_name cannot be empty")
