@@ -31,11 +31,11 @@ func _on_request_completed(result, response_code, headers, body):
 	var json =JSON.parse_string(body.get_string_from_utf8())
 	var images =[]
 	var filename=""
-	print(json["filename_0"])
-	for i in range(frames-1):
-		filename="filename_"+str(i)
-		images.append(json[filename])
-	var pname=json["filename_0"]
+	print(json["wiggle_0"])
+	#for i in range(frames-1):
+		#filename="filename_"+str(i)
+		#images.append(json[filename])
+	var pname=json["wiggle_0"]
 	await(4)
 	pname=pname.replace("http://localhost:5000/images","res://Python//Images")
 	var pic1=Image.load_from_file(pname)
@@ -44,8 +44,14 @@ func _on_request_completed(result, response_code, headers, body):
 	var new_ship_anim=new_ship.get_child(0)
 	var new_ship_anim_track=new_ship_anim.get_animation()
 	var new_ship_frames=new_ship_anim.get_sprite_frames()
-	new_ship_frames.add_frame(new_ship_anim_track,pic1_text,1,1)
 	
+	for i in range(frames-1):
+		pname=json["wiggle_"+str(i)]
+		pname=pname.replace("http://localhost:5000/images","res://Python//Images")
+		pic1=Image.load_from_file(pname)
+		pic1_text=ImageTexture.create_from_image(pic1)
+		new_ship_frames.add_frame(new_ship_anim_track,pic1_text,.5,-1)
+	print(json)
 	
 	$Timer.start()
 	

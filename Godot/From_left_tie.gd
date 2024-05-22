@@ -34,3 +34,7 @@ func _on_timer_timeout():
 func _on_collision_timer_timeout():
 	$CollisionShape2D.disabled=true
 	set_collision_layer_value(1,false)
+
+
+func _on_life_time_timer_timeout():
+	queue_free()
