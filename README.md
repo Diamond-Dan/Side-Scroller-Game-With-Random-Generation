@@ -11,7 +11,7 @@ Communication Contract
 
 •   Download sprite_micro_gen.py, image_gen_api.py and flask_call_examply.py in the same file create three folders "Images", "gifs" and "patterns" with no quotes. Put the oxs pattern files in the pattern folders. When you run the script Images will be put in the Images folder and gifs in the gifs folder.
 
-•   To request data from sprite_micro_gen.py you first must start image_gen_api.py it should show it running on port 5000 but you can run it on any port by chaning the port value at the bottom of image_gen_api.py. You can send a POST request to either "http://localhost:5000/generate_images_criteria" or "http://localhost:5000/generate_random_images" 
+•   To request data from sprite_micro_gen.py you first must start image_gen_api.py it should show it running on port 5000 but you can run it on any port by changing the port value at the bottom of image_gen_api.py. You can send a POST request to either "http://localhost:5000/generate_images_criteria" or "http://localhost:5000/generate_random_images" 
 
     For /generate_random_images you do not need to include json, be aware results will vary wildly
 
@@ -39,6 +39,8 @@ Communication Contract
         'gif_loc_2': 'http://localhost:5000/gifs/movie_seed_10pixel_110frames_40.gif'
 
     You can parse the json for 'gif_loc_2:' and get back the address for the file.
+***UPDATE***
+I added a new program called  image_maker.py which allows you to create your own xml images easily, feel free to import this into your programs if you want uses to specify how their animated images are going to look.
 
 UML Sequence:
 
