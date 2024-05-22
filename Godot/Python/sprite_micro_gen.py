@@ -289,7 +289,7 @@ if __name__ == '__main__':
     file_name="asteroid"
     server_mode=False
     while True:    
-        print("Press 1 to run in random mode or 2 for xml mode,press 3 to draw a planet, 4 for drawing settings, 4 to set xml file")
+        print("Press 1 to run in random mode or 2 for xml mode,press 3 to draw a planet, 4 for drawing settings, 5 to set xml file")
         print("Press e to exit")
         
         mode=input()
@@ -312,8 +312,8 @@ if __name__ == '__main__':
             pixel_size=int(input())
             print("Enter the file name, current file name is "+str(file_name))
             file_name=input()
-        elif mode=="4":
-            print("Enter the xml file name with extension, likely .oxs")
+        elif mode=="5":
+            print("Enter the xml file name with extension, likely .xml or .oxs")
             xml=input()
             current_file_path = os.path.dirname(os.path.realpath(__file__))
             if not os.path.isfile(current_file_path+'\\patterns\\' + xml):
