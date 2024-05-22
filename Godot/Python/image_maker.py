@@ -7,7 +7,7 @@ from tkinter import simpledialog
 pygame.init()
 
 # Set the width and height of the screen (width, height)
-size = (1000, 1000)
+size = (1000, 1000) #draw on large grid which will later be scaled down to 100x100
 screen = pygame.display.set_mode(size)
 
 # Set the title of the window
@@ -25,9 +25,8 @@ mouse_down = False
 # Create the root element for the XML document
 xml_root = ET.Element("root")
 
-# -------- Main Program Loop -----------
 while not done:
-    # --- Main event loop
+    #  Main event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  # User clicked close
             done = True
@@ -42,13 +41,13 @@ while not done:
 
                 # Add the mouse position to the XML document
                 pos = ET.SubElement(xml_root, "partstitch")
-                pos.set("x", str(round(event.pos[0]/10)))
-                pos.set("y", str(round(event.pos[1]/10)))
+                pos.set("x", str(round(event.pos[0]/10))) #divide by 10 to scale down to 100x100
+                pos.set("y", str(round(event.pos[1]/10))) #divide by 10 to scale down to 100x100
 
-    # --- Go ahead and update the screen with what we've drawn
+    #  Go ahead and update the screen with what we've drawn
     pygame.display.flip()
 
-    # --- Limit to 60 frames per second
+    #  Limit to 120 frames per second
     clock.tick(120)
 
 # Create a Tkinter window to get the filename
