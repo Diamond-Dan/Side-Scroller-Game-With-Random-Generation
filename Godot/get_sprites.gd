@@ -17,7 +17,7 @@ func _ready():
 	pixel_number = 100,
 	mode = "2",
 	wiggle =3,
-	xml = 'tie_fighter.oxs',
+	xml = 'carrot.xml',
 	pixel_size = 2,
 	file_name = "asteroid"
 		
