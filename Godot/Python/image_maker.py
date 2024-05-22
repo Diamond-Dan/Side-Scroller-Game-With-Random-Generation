@@ -2,6 +2,7 @@
 import pygame
 import xml.etree.ElementTree as ET
 import tkinter as tk
+import os
 from tkinter import simpledialog
 # Initialize Pygame
 pygame.init()
@@ -60,7 +61,8 @@ filename = tk.simpledialog.askstring("Filename", "Enter a name for the XML file:
 # Write the XML document to a file
 if filename!=None or "":
     tree = ET.ElementTree(xml_root)
-    tree.write(f"{filename}.xml")
+    current_file_path = os.path.dirname(os.path.realpath(__file__))
+    tree.write(f"{current_file_path}/patterns/{filename}.xml")
 
 # Close the window and quit
 pygame.quit()
