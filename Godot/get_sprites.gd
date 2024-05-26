@@ -7,6 +7,7 @@ func _ready():
 	$gen_sprites_req.connect("request_completed", self._on_request_completed)
 
 	var url = "http://127.0.0.1:5000/generate_images_criteria"
+	var music_url="http://127.0.0.1:5001/generate"
 	
 	var headers = ["Content-Type: application/json"]
 	var data={
@@ -25,7 +26,8 @@ func _ready():
 	}
 	var body=JSON.stringify(data)
 	$gen_sprites_req.request(url,headers,HTTPClient.METHOD_POST,body)
-
+	_generate_music(music_url)
+	
 func _on_request_completed(result, response_code, headers, body):
 	await(2)
 	var json =JSON.parse_string(body.get_string_from_utf8())
@@ -93,6 +95,24 @@ func _exit_tree():
 			if file_name.ends_with(".png") or file_name.ends_with(".import"): 
 				dir.remove(file_name)
 			file_name = dir.get_next()
+
+func _generate_music(music_url):
+	var headers = ["Content-Type: application/json"]
+	var notes = randi_range(30,60)
+	var instruments_array: Array[String]=["violin","guitar","piano"]
+	var scales_array: Array[String]=["C_major", "G_major","A_minor","Blues","Pentatonic"]
+	var instruments=instruments_array.pick_random()
+	var scales=scales_array.pick_random()
+	music_url= music_url+"?"+"num_notes="+str(notes)+"&scale="+scales+"&instrument="+instruments
+	$gen_music_req.connect("request_completed", self._music_on_request_completed)
+	$gen_music_req.request(music_url,headers,HTTPClient.METHOD_GET)
+func _music_on_request_completed(result, response_code, headers, body):
+	await(2)
+	var music_json =JSON.parse_string(body.get_string_from_utf8())
+	
+	var music_name=music_json["file"]
+	print(music_name)
+	music_name=music_name.replace("C:\Users\Daniel\OneDrive\CS_Major\361\361_project\Godot\Music Generator\CS361-MicroserviceA\uploads'\'","res://Music Generator\\CS361-MicroserviceA\\uploads")
 func _process(delta):
 	pass
 

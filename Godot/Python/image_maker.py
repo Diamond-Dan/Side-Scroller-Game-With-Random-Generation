@@ -7,6 +7,7 @@ from tkinter import simpledialog
 # Initialize Pygame
 pygame.init()
 
+saved = False
 # Set the width and height of the screen (width, height)
 size = (1000, 1000) #draw on large grid which will later be scaled down to 100x100
 screen = pygame.display.set_mode(size)
@@ -44,8 +45,18 @@ while not done:
                 pos = ET.SubElement(xml_root, "partstitch")
                 pos.set("x", str(round(event.pos[0]/10))) #divide by 10 to scale down to 100x100
                 pos.set("y", str(round(event.pos[1]/10))) #divide by 10 to scale down to 100x100
-
-    #  Go ahead and update the screen with what we've drawn
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_s:
+                # The 's' key was pressed! Show the save dialog.
+                root = tk.Tk()
+                root.withdraw()  # Hide the main window
+                filename = simpledialog.askstring("Filename", "Enter a name for the XML file:")
+                if filename:
+                    tree = ET.ElementTree(xml_root)
+                    current_file_path = os.path.dirname(os.path.realpath(__file__))
+                    tree.write(f"{current_file_path}/patterns/{filename}.xml")
+                    saved = True
+#  Go ahead and update the screen with what we've drawn
     pygame.display.flip()
 
     #  Limit to 120 frames per second
@@ -56,13 +67,14 @@ root = tk.Tk()
 root.withdraw()  # Hide the main window
 
 # Show a simple dialog asking for the filename
-filename = tk.simpledialog.askstring("Filename", "Enter a name for the XML file:")
+if not saved:
+    filename = simpledialog.askstring("Filename", "Enter a name for the XML file:")
 
-# Write the XML document to a file
-if filename!=None or "":
-    tree = ET.ElementTree(xml_root)
-    current_file_path = os.path.dirname(os.path.realpath(__file__))
-    tree.write(f"{current_file_path}/patterns/{filename}.xml")
+    # Write the XML document to a file
+    if filename!=None or "":
+        tree = ET.ElementTree(xml_root)
+        current_file_path = os.path.dirname(os.path.realpath(__file__))
+        tree.write(f"{current_file_path}/patterns/{filename}.xml")
 
 # Close the window and quit
 pygame.quit()
