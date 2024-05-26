@@ -54,7 +54,8 @@ while not done:
                 if filename:
                     tree = ET.ElementTree(xml_root)
                     current_file_path = os.path.dirname(os.path.realpath(__file__))
-                    tree.write(f"{current_file_path}/patterns/{filename}.xml")
+                    file_path = os.path.join(current_file_path, 'patterns', f"{filename}.xml")
+                    tree.write(file_path)
                     saved = True
 #  Go ahead and update the screen with what we've drawn
     pygame.display.flip()
@@ -74,7 +75,9 @@ if not saved:
     if filename!=None or "":
         tree = ET.ElementTree(xml_root)
         current_file_path = os.path.dirname(os.path.realpath(__file__))
-        tree.write(f"{current_file_path}/patterns/{filename}.xml")
+        file_path = os.path.join(current_file_path, 'patterns', f"{filename}.xml")
+        tree.write(file_path)
+        saved = True
 
 # Close the window and quit
 pygame.quit()
