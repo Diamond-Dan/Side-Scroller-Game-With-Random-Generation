@@ -30,7 +30,7 @@ func _physics_process(delta):
 	
 
 func _on_node_2d_end_point_of_line(num):
-	line_end=num # Replace with function body.
+	line_end=num 
 
 func lose_life():
 	#print($MarginContainer/TextureProgressBar.value)

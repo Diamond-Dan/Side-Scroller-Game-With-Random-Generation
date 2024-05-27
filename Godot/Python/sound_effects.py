@@ -5,14 +5,14 @@ import numpy as np
 from scipy.io.wavfile import write
 from scipy.signal import square, sawtooth
 # import matplotlib.pyplot as plt
-from pydub import AudioSegment
+# from pydub import AudioSegment
 
 
 def convert_to_wav(sample_rate, y_norm, file_name):
     """Converts the sound to a WAV file."""
     cur_dir = os.path.dirname(__file__)
     write(cur_dir + "\\sounds\\" + file_name + ".wav", sample_rate, y_norm)
-
+    return(cur_dir + "\\sounds\\" + file_name + ".wav")
 # currently not using this function
 # def convert_to_mp3(filename):
 #     """Converts the sound to a MP3 file."""
@@ -45,8 +45,8 @@ def laser_sound():
     y_norm = np.int16(y_distorted * 2500)
 
     # Write to a wave file
-    convert_to_wav(sample_rate, y_norm, file_name)
-    
+    laser_sound_loc = convert_to_wav(sample_rate, y_norm, file_name)
+    return laser_sound_loc
     # keeping this for debugging purposes
     # # Plot the first second of the wave
     # plt.figure(figsize=(10, 4))
@@ -92,9 +92,8 @@ def explosion_sound():
     y_norm = np.int16(y_distorted * 32767)
 
     # Write to a wave file
-    convert_to_wav(sample_rate, y_norm, file_name)
-   
-
+    explosion_sound_loc= convert_to_wav(sample_rate, y_norm, file_name)
+    return explosion_sound_loc
 
 def flying_noise():
     """Generates a flying noises sound effect using a square wave."""
@@ -127,11 +126,9 @@ def flying_noise():
     y_norm = np.int16(y_distorted * 32767)
     y_norm_after_burner = np.int16(y_distorted_after_burner * 32767)
     # Write to a wave file
-    convert_to_wav(sample_rate, y_norm, file_name_1)
-    convert_to_wav(after_burner_sample_rate, y_norm_after_burner, file_name_2)
-    
-
-
+    engine_sound_loc=convert_to_wav(sample_rate, y_norm, file_name_1)
+    afterburner_sound_loc=convert_to_wav(after_burner_sample_rate, y_norm_after_burner, file_name_2)
+    return engine_sound_loc,afterburner_sound_loc
 
 if __name__ == '__main__':
     laser_sound()

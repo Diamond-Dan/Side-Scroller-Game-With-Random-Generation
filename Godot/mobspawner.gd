@@ -4,21 +4,21 @@ var start_height
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	$from_left_timer.start
-	start_height=%CharacterBody2D.position.y*-1
+	start_height=get_parent().position.y*-1
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	
-	if start_height-%CharacterBody2D.position.y<=900:
+	if start_height-get_parent().position.y<=900:
 		$from_left_timer.wait_time=2
-	elif start_height-%CharacterBody2D.position.y>=901 and start_height-%CharacterBody2D.position.y<1200 :
+	elif start_height-get_parent().position.y>=901 and start_height-get_parent().position.y<1200 :
 		$from_left_timer.wait_time=1
-	elif start_height-%CharacterBody2D.position.y>1200:
+	elif start_height-get_parent().position.y>1200:
 		$from_left_timer.wait_time=.2
 func spawn_ship_on_path():
 	print("tiggered")
 	print($from_left_timer.wait_time)
-	print(start_height-%CharacterBody2D.position.y)
+	print(start_height-get_parent().position.y)
 	
 	var ship_loc=$from_left_spawn
 	ship_loc.progress_ratio=randf()
@@ -29,7 +29,7 @@ func spawn_ship_on_path():
 	
 	var velocity = Vector2(randf_range(350.0, 450.0), 0.0)
 	
-	var direction= get_angle_to(%CharacterBody2D.position)
+	var direction= get_angle_to(get_parent().position)
 	direction+=randf_range(-PI / 8, PI / 8)
 	#new_ship.look_at(get_global_mouse_position())
 
