@@ -65,4 +65,9 @@ position = Vector2(212, 155)
 [node name="Timer" type="Timer" parent="."]
 autostart = true
 
+[node name="music" type="AudioStreamPlayer" parent="."]
+autoplay = true
+
+[node name="gen_music_req" type="HTTPRequest" parent="."]
+
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

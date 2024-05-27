@@ -2,3 +2,4 @@
 .godot/
 python/*.png
 python/*.png.import 
+fluidsynth/

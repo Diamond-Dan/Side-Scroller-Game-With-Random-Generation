@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://hgsbqqn6aaj1"]
+[gd_scene load_steps=17 format=3 uid="uid://hgsbqqn6aaj1"]
 
 [ext_resource type="Script" path="res://ground.gd" id="1_7l2c1"]
 [ext_resource type="Script" path="res://player.gd" id="2_d6scy"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://MenuBar.gd" id="10_8uxdk"]
 [ext_resource type="Theme" uid="uid://c0l6lyvo8lxkx" path="res://text.tres" id="11_j31hx"]
 [ext_resource type="Script" path="res://mobspawner.gd" id="12_5irga"]
+[ext_resource type="Script" path="res://music.gd" id="13_3xssc"]
 [ext_resource type="Script" path="res://from_left_timer.gd" id="13_82f0t"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rjbw0"]
@@ -140,6 +141,14 @@ shape = SubResource("SegmentShape2D_m3q08")
 visible = false
 texture = ExtResource("4_uy7uw")
 
+[node name="music" type="AudioStreamPlayer" parent="."]
+autoplay = true
+script = ExtResource("13_3xssc")
+
+[node name="gen_music_req" type="HTTPRequest" parent="music"]
+
+[node name="music_timer" type="Timer" parent="music"]
+
 [connection signal="end_point_of_line" from="." to="CharacterBody2D" method="_on_node_2d_end_point_of_line"]
 [connection signal="dead" from="CharacterBody2D" to="." method="_on_character_body_2d_dead"]
 [connection signal="end_of_the_line" from="CharacterBody2D" to="." method="_on_character_body_2d_end_of_the_line"]
@@ -147,3 +156,4 @@ texture = ExtResource("4_uy7uw")
 [connection signal="timeout" from="CharacterBody2D/from_left_path/from_left_timer" to="CharacterBody2D/from_left_path" method="_on_from_left_timer_timeout"]
 [connection signal="timeout" from="CharacterBody2D/Score/Timer" to="CharacterBody2D/Score" method="_on_timer_timeout"]
 [connection signal="pressed" from="CharacterBody2D/MenuBar/quit_but" to="CharacterBody2D/MenuBar" method="_on_quit_but_pressed"]
+[connection signal="timeout" from="music/music_timer" to="music" method="_on_music_timer_timeout"]

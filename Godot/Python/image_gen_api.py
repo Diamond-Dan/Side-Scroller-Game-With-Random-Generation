@@ -32,9 +32,9 @@ def generate_random_images():
         'gif_loc_2': 'http://localhost:5000/gifs/' + gif_loc_2.replace("\\", "/")
     }
     for i, name in enumerate(filename, start=1):
-        image_urls[f'filename_{i}'] = f'http://localhost:5000/images/{name}'.replace("\\", "/")
+        image_urls[f'wiggle_{i}'] = f'http://localhost:5000/images/{name}'.replace("\\", "/")
     for i, name in enumerate(filename_2, start=1):
-        image_urls[f'filename_2_{i}'] = f'http://localhost:5000/images/{name}'.replace("\\", "/")
+        image_urls[f'explode_{i}'] = f'http://localhost:5000/images/{name}'.replace("\\", "/")
   
     for name, url in image_urls.items():
         print(f'{name}: {url}')
@@ -125,10 +125,10 @@ def generate_images_criteria():
     filename_2.pop(0)
     for i, name in enumerate(filename, start=0):
         if name != "":
-            image_urls[f'filename_{i}'] = f'http://localhost:5000/images/{name}' .replace("\\", "//")
+            image_urls[f'wiggle_{i}'] = f'http://localhost:5000/images/{name}' .replace("\\", "//")
     for i, name in enumerate(filename_2, start=0):
         if name != "":
-            image_urls[f'filename_2_{i}'] = f'http://localhost:5000/images/{name}'.replace("\\", "//")
+            image_urls[f'explode_{i}'] = f'http://localhost:5000/images/{name}'.replace("\\", "//")
   
     for name, url in image_urls.items():
         print(f'{name}: {url}')
