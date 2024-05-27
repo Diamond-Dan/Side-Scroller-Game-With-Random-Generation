@@ -129,3 +129,30 @@ func _on_character_body_2d_ready():
 func _on_character_body_2d_dead():
 	Difficulty.last_score=$CharacterBody2D/Score.score
 	get_tree().change_scene_to_file("res://intro.tscn")
+	
+	
+func _notification(what):
+	if what== NOTIFICATION_WM_CLOSE_REQUEST:
+		_delete_music()
+		_delete_images()
+
+func _delete_images():
+	var dir = DirAccess.open("res://Python//Images")
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if file_name.ends_with(".png") or file_name.ends_with(".import"): 
+				dir.remove(file_name)
+			file_name = dir.get_next()
+	
+func _delete_music():
+	var dir = DirAccess.open("res://Music_Generator//CS361-MicroserviceA//uploads")
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if file_name.ends_with(".mid") or file_name.ends_with(".import") or file_name.ends_with(".wav") or file_name.ends_with(".mp3"): 
+				print(file_name)
+				dir.remove(file_name)
+			file_name = dir.get_next()
