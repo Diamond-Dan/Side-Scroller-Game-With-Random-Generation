@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://c3tdir6qptdce"]
+[gd_scene load_steps=14 format=3 uid="uid://c3tdir6qptdce"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_8f2dn"]
 [ext_resource type="Texture2D" uid="uid://btrvbt32lmsyu" path="res://ship.png" id="2_as7rs"]
@@ -21,7 +21,9 @@ _data = {
 }
 point_count = 11
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[sub_resource type="AudioStreamWAV" id="AudioStreamWAV_dj42c"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" groups=["player"]]
 position = Vector2(336, -411)
 motion_mode = 1
 script = ExtResource("1_8f2dn")
@@ -122,7 +124,10 @@ offset_bottom = 98.0
 theme = ExtResource("10_wy0y1")
 text = "Click here to Quit or press ESC to continue"
 
-[node name="sound_maker" type="AudioStreamPlayer2D" parent="."]
+[node name="engine_sound" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamWAV_dj42c")
+
+[node name="after_burner_sound" type="AudioStreamPlayer" parent="."]
 
 [connection signal="timeout" from="from_left_path/from_left_timer" to="from_left_path" method="_on_from_left_timer_timeout"]
 [connection signal="timeout" from="Score/Timer" to="Score" method="_on_timer_timeout"]

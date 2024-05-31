@@ -14,12 +14,12 @@ func _ready():
 	_delete_images()
 	_generate_sprite(sprite_url)
 	_generate_music(music_url)
-	#_generate_sound_effects(sound_effects_url)
+	_generate_sound_effects(sound_effects_url)
 	
 func _generate_sound_effects(sound_url):
 	var dir = DirAccess.open("res://Python//sounds")
 	var data = {
-		sound_type ="laser"
+		sound_type ="all"
 	}
 	var headers = ["Content-Type: application/json"]
 	var body=JSON.stringify(data)
@@ -30,13 +30,34 @@ func _generate_sound_effects(sound_url):
 func _sounds_on_request_completed(result, response_code, headers, body):
 	await(2)
 	var sounds_json =JSON.parse_string(body.get_string_from_utf8())
+	_assign_sound(sounds_json)
 	
-	var sound_name=sounds_json["file"]
+
+
+
+func _assign_sound(json):
+	print(json)
+	var explode_sound_json= json["explosion"]
+	var explode_sound_name=explode_sound_json.replace("http://localhost:5005/sounds","res://Python//sounds")
+	var file=FileAccess.open(explode_sound_name,FileAccess.READ)
+	var sound=AudioStreamWAV.new()
+	sound.data =file.get_buffer(file.get_length())
+	sound.mix_rate=44100
+	sound.set_format(1)
 	
-	sound_name=sound_name.replace("http://localhost:5005/sounds","res://Python//Images")
-	await(2)
-	print(sound_name)
+	#var explode_sound_file= load(explode_sound_name)
+	var new_ship =left_ship.instantiate()
+	var new_ship_explode = new_ship.get_child(6)
+	print(new_ship_explode)
 	
+	Difficulty.explosion=explode_sound_name
+	new_ship_explode.set_stream(sound)
+	
+	$AudioStreamPlayer.set_stream(sound)
+	
+	$AudioStreamPlayer.play()
+	
+
 
 func _generate_sprite(url):
 	var dir = DirAccess.open("res://Python//patterns")
@@ -64,7 +85,7 @@ func _generate_sprite(url):
 	xml = random_guided_image,
 	pixel_size = 2,
 	file_name = random_guided_image
-		
+	
 		
 	}
 	var body=JSON.stringify(data)
@@ -74,7 +95,7 @@ func _on_request_completed(result, response_code, headers, body):
 	await(2)
 	var json =JSON.parse_string(body.get_string_from_utf8())
 	var images =[]
-	var filename=""
+	
 	#for i in range(frames-1):
 		#filename="filename_"+str(i)
 		#images.append(json[filename])

@@ -22,13 +22,13 @@ func _generate_music(music_url):
 	$gen_music_req.connect("request_completed", self._music_on_request_completed)
 	$gen_music_req.request(music_url,headers,HTTPClient.METHOD_GET)
 func _music_on_request_completed(result, response_code, headers, body):
-	await(1)
+
 	var music_json =JSON.parse_string(body.get_string_from_utf8())
 	
 	var music_name=music_json["file"]
 	
 	music_name=music_name.replace("C:\\Users\\Daniel\\OneDrive\\CS_Major\\361\\361_project\\Godot\\Music Generator\\CS361-MicroserviceA\\uploads\\","res://Music Generator//CS361-MicroserviceA//uploads//")
-	await(1)
+	
 	var music_file= _open_mp3(music_name)
 	
 	self.set_stream(music_file)

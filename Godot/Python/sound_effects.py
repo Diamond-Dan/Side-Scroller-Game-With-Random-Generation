@@ -4,8 +4,8 @@ import random
 import numpy as np
 from scipy.io.wavfile import write
 from scipy.signal import square, sawtooth
-# import matplotlib.pyplot as plt
-# from pydub import AudioSegment
+import matplotlib.pyplot as plt
+from pydub import AudioSegment
 
 
 def convert_to_wav(sample_rate, y_norm, file_name):
@@ -19,6 +19,19 @@ def convert_to_wav(sample_rate, y_norm, file_name):
 #     audio = AudioSegment.from_wav("sounds\\"+filename + ".wav")
 #     audio.export("sounds\\"+filename + ".mp3", format="mp3")
 
+def plot_wave(t, y_norm, duration):
+    # keeping this for debugging purposes
+    # Plot the first second of the wave
+    plt.figure(figsize=(10, 4))
+    plt.plot(t, y_norm)
+    plt.title('Sine Wave')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+    plt.grid(True)
+    plt.xlim([0, duration])
+    plt.show()
+
+    print("Amplitude range: ", np.min(y_norm), " to ", np.max(y_norm))
 
 def laser_sound():
     """Generates a laser sound effect using a square wave."""
@@ -45,8 +58,8 @@ def laser_sound():
     y_norm = np.int16(y_distorted * 2500)
 
     # Write to a wave file
-    laser_sound_loc = convert_to_wav(sample_rate, y_norm, file_name)
-    return laser_sound_loc
+    convert_to_wav(sample_rate, y_norm, file_name)
+    return file_name
     # keeping this for debugging purposes
     # # Plot the first second of the wave
     # plt.figure(figsize=(10, 4))
@@ -63,21 +76,20 @@ def laser_sound():
 
 def explosion_sound():
     """Generates an explosion sound effect using a sawtooth wave."""
-    sample_rate = random.randint(500, 1000)  # Sample rate in Hz
-    freq_low = random.randint(50, 100)  # Frequency of the sine wave in Hz
-    freq_high = random.randint(550, 650)  # Frequency of the sine wave in Hz
-    duration = random.uniform(1.0, 1.5)  # Duration in seconds
-    distortion = 5  # Distortion factor
-    amplitude = random.randint(2, 3)  # Amplitude of the sine wave
+    sample_rate = 44100  # Sample rate in Hz
+    freq_low = random.randint(215, 250)  # Frequency of the sine wave in Hz
+    freq_high = random.randint(1120, 1180)  # Frequency of the sine wave in Hz
+    duration = random.uniform(1.0, 1.2)  # Duration in seconds
+    distortion = 2  # Distortion factor
+    amplitude = random.randint(150, 200)/100  # Amplitude of the sine wave
     file_name = "explosion_sound"
     # Generate the time values
     t = np.arange(sample_rate * duration) / sample_rate
 
-    freq_range = (np.sin(2 * np.pi * freq_high * t) + 1) / 2 * \
-        (freq_high - freq_low) - freq_high
+    freq_range = (freq_low + (freq_high - freq_low) * t )
 
     # Generate the sine wave
-    y = amplitude * sawtooth(2 * np.pi * freq_range * t)
+    y = amplitude * square(np.pi * freq_range/2 * t*2)
 
     # Generate an envelope that starts at 1 and decreases to 0
     envelope = np.exp(-5 * np.linspace(0, 1, len(y)))
@@ -92,8 +104,9 @@ def explosion_sound():
     y_norm = np.int16(y_distorted * 32767)
 
     # Write to a wave file
-    explosion_sound_loc= convert_to_wav(sample_rate, y_norm, file_name)
-    return explosion_sound_loc
+    convert_to_wav(sample_rate, y_norm, file_name)
+    #plot_wave(t, y_norm, duration)
+    return file_name
 
 def flying_noise():
     """Generates a flying noises sound effect using a square wave."""
@@ -126,9 +139,9 @@ def flying_noise():
     y_norm = np.int16(y_distorted * 32767)
     y_norm_after_burner = np.int16(y_distorted_after_burner * 32767)
     # Write to a wave file
-    engine_sound_loc=convert_to_wav(sample_rate, y_norm, file_name_1)
-    afterburner_sound_loc=convert_to_wav(after_burner_sample_rate, y_norm_after_burner, file_name_2)
-    return engine_sound_loc,afterburner_sound_loc
+    convert_to_wav(sample_rate, y_norm, file_name_1)
+    convert_to_wav(after_burner_sample_rate, y_norm_after_burner, file_name_2)
+    return file_name_1, file_name_2
 
 if __name__ == '__main__':
     laser_sound()
