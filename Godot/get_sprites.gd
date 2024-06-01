@@ -39,11 +39,11 @@ func _assign_sound(json):
 	print(json)
 	var explode_sound_json= json["explosion"]
 	var explode_sound_name=explode_sound_json.replace("http://localhost:5005/sounds","res://Python//sounds")
-	var file=FileAccess.open(explode_sound_name,FileAccess.READ)
-	var sound=AudioStreamWAV.new()
-	sound.data =file.get_buffer(file.get_length())
-	sound.mix_rate=44100
-	sound.set_format(1)
+	var engine_sound_json= json["engine"]
+	var engine_sound_name=engine_sound_json.replace("http://localhost:5005/sounds","res://Python//sounds")
+	var afterburner_sound_json= json["afterburner"]
+	var afterburner_sound_name=afterburner_sound_json.replace("http://localhost:5005/sounds","res://Python//sounds")
+	
 	
 	#var explode_sound_file= load(explode_sound_name)
 	var new_ship =left_ship.instantiate()
@@ -51,7 +51,10 @@ func _assign_sound(json):
 	print(new_ship_explode)
 	
 	Difficulty.explosion=explode_sound_name
-	new_ship_explode.set_stream(sound)
+	Difficulty.engine=engine_sound_name
+	Difficulty.afterburner=afterburner_sound_name
+	
+	var sound= _open_mp3(Difficulty.engine)
 	
 	$AudioStreamPlayer.set_stream(sound)
 	

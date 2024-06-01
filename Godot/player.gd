@@ -4,7 +4,18 @@ signal end_of_the_line
 signal dead
 var line_end
 
+func _ready():
 	
+	var engine_file= _open_mp3(Difficulty.engine)
+	var afterburner_file = _open_mp3(Difficulty.afterburner)
+	$engine_sound.set_stream(engine_file)
+	$engine_sound.play()
+	$after_burner_sound.set_stream(engine_file)
+func _open_mp3(path):
+	var file=FileAccess.open(path,FileAccess.READ)
+	var sound=AudioStreamMP3.new()
+	sound.data =file.get_buffer(file.get_length())
+	return sound	
 func get_input():
 	
 	var input_direction = Input.get_vector("left", "right", "up", "down")
@@ -15,9 +26,20 @@ func get_input():
 		
 	elif(input_direction[0]==1):
 		velocity = input_direction * (speed*1)
+		$engine_sound.stop()
+		if $after_burner_sound.is_playing() == false:
+			$after_burner_sound.play()
+			$engine_sound.stop()
+		print("afterburner")
 	else:
 		input_direction[0]=.5
 		velocity =input_direction *speed
+		
+	if(input_direction[0]!=1):
+		if $engine_sound.is_playing()==false:
+			$after_burner_sound.stop()
+			$engine_sound.play()
+			
 func _physics_process(delta):
 	get_input()
 	var collide_info= move_and_slide()

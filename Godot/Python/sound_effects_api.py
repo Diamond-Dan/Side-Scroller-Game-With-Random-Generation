@@ -34,10 +34,10 @@ def generate_sounds():
         file_names.append(flying_noise[1])
 
         sound_effects_url = {
-            "laser": 'http://localhost:5005/sounds/' + file_names[0] + '.wav',
-            "explosion": 'http://localhost:5005/sounds/' + file_names[1] + '.wav',
-            "engine": 'http://localhost:5005/sounds/' + file_names[2] + '.wav',
-            "afterburner": 'http://localhost:5005/sounds/' + file_names[3] + '.wav'
+            "laser": 'http://localhost:5005/sounds/' + file_names[0] + '.mp3',
+            "explosion": 'http://localhost:5005/sounds/' + file_names[1] + '.mp3',
+            "engine": 'http://localhost:5005/sounds/' + file_names[2] + '.mp3',
+            "afterburner": 'http://localhost:5005/sounds/' + file_names[3] + '.mp3'
         }
     return jsonify(sound_effects_url)
 

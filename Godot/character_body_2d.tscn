@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c3tdir6qptdce"]
+[gd_scene load_steps=13 format=3 uid="uid://c3tdir6qptdce"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_8f2dn"]
 [ext_resource type="Texture2D" uid="uid://btrvbt32lmsyu" path="res://ship.png" id="2_as7rs"]
@@ -20,8 +20,6 @@ _data = {
 "points": PackedVector2Array(0, 0, 0, 0, -47, -109, 0, 0, 0, 0, 353, -75, 0, 0, 0, 0, 1112, -74, 0, 0, 0, 0, 1074, 15, 0, 0, 0, 0, 145, 37, 0, 0, 0, 0, 76, 30, 0, 0, 0, 0, 33, 11, 0, 0, 0, 0, -138, 14, 0, 0, 0, 0, -111, -95, 0, 0, 0, 0, -55, 0, 0, 0, 0, 0, -47, -109)
 }
 point_count = 11
-
-[sub_resource type="AudioStreamWAV" id="AudioStreamWAV_dj42c"]
 
 [node name="CharacterBody2D" type="CharacterBody2D" groups=["player"]]
 position = Vector2(336, -411)
@@ -124,10 +122,12 @@ offset_bottom = 98.0
 theme = ExtResource("10_wy0y1")
 text = "Click here to Quit or press ESC to continue"
 
-[node name="engine_sound" type="AudioStreamPlayer2D" parent="."]
-stream = SubResource("AudioStreamWAV_dj42c")
+[node name="engine_sound" type="AudioStreamPlayer" parent="."]
+volume_db = -30.952
 
 [node name="after_burner_sound" type="AudioStreamPlayer" parent="."]
+volume_db = -21.048
+pitch_scale = 1.9
 
 [connection signal="timeout" from="from_left_path/from_left_timer" to="from_left_path" method="_on_from_left_timer_timeout"]
 [connection signal="timeout" from="Score/Timer" to="Score" method="_on_timer_timeout"]

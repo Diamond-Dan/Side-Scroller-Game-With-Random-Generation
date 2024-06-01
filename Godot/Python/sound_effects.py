@@ -14,10 +14,10 @@ def convert_to_wav(sample_rate, y_norm, file_name):
     write(cur_dir + "\\sounds\\" + file_name + ".wav", sample_rate, y_norm)
     return(cur_dir + "\\sounds\\" + file_name + ".wav")
 # currently not using this function
-# def convert_to_mp3(filename):
-#     """Converts the sound to a MP3 file."""
-#     audio = AudioSegment.from_wav("sounds\\"+filename + ".wav")
-#     audio.export("sounds\\"+filename + ".mp3", format="mp3")
+def convert_to_mp3(filename):
+    """Converts the sound to a MP3 file."""
+    audio = AudioSegment.from_wav("sounds\\"+filename + ".wav")
+    audio.export("sounds\\"+filename + ".mp3", format="mp3")
 
 def plot_wave(t, y_norm, duration):
     # keeping this for debugging purposes
@@ -59,6 +59,7 @@ def laser_sound():
 
     # Write to a wave file
     convert_to_wav(sample_rate, y_norm, file_name)
+    convert_to_mp3(file_name)
     return file_name
     # keeping this for debugging purposes
     # # Plot the first second of the wave
@@ -118,6 +119,7 @@ def explosion_sound():
     # Write to a wave file
     convert_to_wav(sample_rate, y_norm, file_name)
     # plot_wave(t, y_norm, duration)
+    convert_to_mp3(file_name)
     return file_name
 
 def flying_noise():
@@ -126,7 +128,7 @@ def flying_noise():
     after_burner_sample_rate = 44100
     base_freq = random.randint(55, 70)  # Base frequency for the regular engine in Hz
     base_freq_afterburner = base_freq + 100  # Base frequency for the afterburner in Hz
-    duration = random.uniform(3.0, 4.1)  # Duration in seconds
+    duration = 5  # Duration in seconds
     distortion = 2  # Distortion factor
     amplitude = random.randint(100, 200)/1000  # Amplitude of the wave
     mod_depth = 2  # Depth of frequency modulation
@@ -158,9 +160,8 @@ def flying_noise():
     convert_to_wav(sample_rate, y_norm, file_name_1)
     convert_to_wav(after_burner_sample_rate, y_norm_after_burner, file_name_2)
 
-    # Plot the waves
-    plot_wave(t, y_norm, duration)
-    plot_wave(t_after_burner, y_norm_after_burner, duration)
+    convert_to_mp3(file_name_1)
+    convert_to_mp3(file_name_2)
 
     return file_name_1, file_name_2
 

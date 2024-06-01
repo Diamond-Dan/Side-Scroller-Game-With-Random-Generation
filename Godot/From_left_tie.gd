@@ -8,12 +8,17 @@ func _ready():
 	
 	$AnimatedSprite2D.play(mob_types[skin])
 	
-	var file=FileAccess.open(Difficulty.explosion,FileAccess.READ)
-	var sound=AudioStreamWAV.new()
+	var explode_file= _open_mp3(Difficulty.explosion)
+	
+	
+	$explode_sound.set_stream(explode_file)
+	
+	
+func _open_mp3(path):
+	var file=FileAccess.open(path,FileAccess.READ)
+	var sound=AudioStreamMP3.new()
 	sound.data =file.get_buffer(file.get_length())
-	sound.mix_rate=44100
-	sound.set_format(1)
-	$explode_sound.set_stream(sound)
+	return sound	
 func _on_visible_on_screen_notifier_2d_screen_exited():
 	queue_free()
 
