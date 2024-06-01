@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://m4mldp66rc6m"]
+[gd_scene load_steps=7 format=3 uid="uid://m4mldp66rc6m"]
 
 [ext_resource type="Script" path="res://get_sprites.gd" id="1_u75ox"]
 [ext_resource type="Script" path="res://Start_Button.gd" id="1_ucgwb"]
 [ext_resource type="Script" path="res://Tutorial_Button.gd" id="2_hrosy"]
 [ext_resource type="Script" path="res://Options_button.gd" id="3_4760c"]
 [ext_resource type="Script" path="res://RichTextLabel.gd" id="4_ah3rv"]
+
+[sub_resource type="AudioStreamWAV" id="AudioStreamWAV_l0mbh"]
+format = 1
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_u75ox")
@@ -69,5 +72,12 @@ autostart = true
 autoplay = true
 
 [node name="gen_music_req" type="HTTPRequest" parent="."]
+
+[node name="gen_sound_req" type="HTTPRequest" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamWAV_l0mbh")
+volume_db = -23.291
+autoplay = true
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

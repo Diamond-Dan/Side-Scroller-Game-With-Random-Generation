@@ -1,6 +1,6 @@
 extends Node2D
 @onready var left_ship=preload("res://from_left_tie.tscn")
-var frames= 11
+var frames= 15
 var global_anim_name_1="asteroid_1"
 var global_anim_name_2="asteroid_2"
 var global_anim_name_3="explode"
@@ -9,9 +9,58 @@ var global_anim_count=0
 func _ready():
 	var sprite_url = "http://127.0.0.1:5000/generate_images_criteria"
 	var music_url="http://127.0.0.1:5001/generate"
-
+	var sound_effects_url="http://127.0.0.1:5005/generate_sounds"
+	_delete_music()
+	_delete_images()
 	_generate_sprite(sprite_url)
 	_generate_music(music_url)
+	_generate_sound_effects(sound_effects_url)
+	
+func _generate_sound_effects(sound_url):
+	var dir = DirAccess.open("res://Python//sounds")
+	var data = {
+		sound_type ="all"
+	}
+	var headers = ["Content-Type: application/json"]
+	var body=JSON.stringify(data)
+	$gen_sound_req.connect("request_completed", self._sounds_on_request_completed)
+	$gen_sound_req.request(sound_url,headers,HTTPClient.METHOD_POST,body)
+	
+	
+func _sounds_on_request_completed(result, response_code, headers, body):
+	await(2)
+	var sounds_json =JSON.parse_string(body.get_string_from_utf8())
+	_assign_sound(sounds_json)
+	
+
+
+
+func _assign_sound(json):
+	print(json)
+	var explode_sound_json= json["explosion"]
+	var explode_sound_name=explode_sound_json.replace("http://localhost:5005/sounds","res://Python//sounds")
+	var engine_sound_json= json["engine"]
+	var engine_sound_name=engine_sound_json.replace("http://localhost:5005/sounds","res://Python//sounds")
+	var afterburner_sound_json= json["afterburner"]
+	var afterburner_sound_name=afterburner_sound_json.replace("http://localhost:5005/sounds","res://Python//sounds")
+	
+	
+	#var explode_sound_file= load(explode_sound_name)
+	var new_ship =left_ship.instantiate()
+	var new_ship_explode = new_ship.get_child(6)
+	print(new_ship_explode)
+	
+	Difficulty.explosion=explode_sound_name
+	Difficulty.engine=engine_sound_name
+	Difficulty.afterburner=afterburner_sound_name
+	
+	var sound= _open_mp3(Difficulty.engine)
+	
+	$AudioStreamPlayer.set_stream(sound)
+	
+	$AudioStreamPlayer.play()
+	
+
 
 func _generate_sprite(url):
 	var dir = DirAccess.open("res://Python//patterns")
@@ -35,11 +84,11 @@ func _generate_sprite(url):
 	seed = 3,
 	pixel_number = 100,
 	mode = "2",
-	wiggle =6,
+	wiggle =3,
 	xml = random_guided_image,
 	pixel_size = 2,
 	file_name = random_guided_image
-		
+	
 		
 	}
 	var body=JSON.stringify(data)
@@ -49,8 +98,7 @@ func _on_request_completed(result, response_code, headers, body):
 	await(2)
 	var json =JSON.parse_string(body.get_string_from_utf8())
 	var images =[]
-	var filename=""
-	print(json["wiggle_0"])
+	
 	#for i in range(frames-1):
 		#filename="filename_"+str(i)
 		#images.append(json[filename])
@@ -64,23 +112,26 @@ func _on_request_completed(result, response_code, headers, body):
 	var new_ship_anim_track=new_ship_anim.get_animation()
 	var new_ship_frames=new_ship_anim.get_sprite_frames()
 	
-	for i in range(frames-1):
+	new_ship_frames.clear("asteroid_1")
+	new_ship_frames.clear("explode")
+	for i in range(frames - 1):
 		pname=json["wiggle_"+str(i)]
 		pname=pname.replace("http://localhost:5000/images","res://Python//Images")
 		pic1=Image.load_from_file(pname)
 		pic1_text=ImageTexture.create_from_image(pic1)
 		new_ship_frames.add_frame(new_ship_anim_track,pic1_text,.5,-1)
-	print(json)
+		
 	new_ship_anim.set_animation(global_anim_name_3)
 	var new_ship_anim_explode=new_ship_anim.get_animation()
 	var new_ship_frames_explode=new_ship_anim.get_sprite_frames()
-	for i in range(frames-1):
+	
+	for i in range(frames - 1):
 		pname=json["explode_"+str(i)]
 		pname=pname.replace("http://localhost:5000/images","res://Python//Images")
 		pic1=Image.load_from_file(pname)
 		pic1_text=ImageTexture.create_from_image(pic1)
 		new_ship_frames_explode.add_frame(new_ship_anim_explode,pic1_text,.5,-1)
-	print(json)
+	
 	$Timer.start()
 	
 	#new_ship.add_child(new_ship_anim)
@@ -131,21 +182,21 @@ func _delete_images():
 func _delete_music():
 	var dir = DirAccess.open("res://Music_Generator//CS361-MicroserviceA//uploads")
 	if dir:
-		print(dir)
+		
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
 			if file_name.ends_with(".mid") or file_name.ends_with(".import") or file_name.ends_with(".wav") or file_name.ends_with(".mp3"): 
-				print(file_name)
+				
 				dir.remove(file_name)
 			file_name = dir.get_next()
 
 
 func _generate_music(music_url):
 	var headers = ["Content-Type: application/json"]
-	var notes = randi_range(30,60)
+	var notes = randi_range(60,120)
 	var instruments_array: Array[String]=["violin","guitar","piano","electric_guitar","acoustic_guitar","xylophone"]
-	var scales_array: Array[String]=["C_major", "G_major","A_minor","Blues","Pentatonic","E_minor","D_major"]
+	var scales_array: Array[String]=["C_major", "G_major","A_minor","Blues","Pentatonic","E_minor","D_major","A_flat","B_flat", "F_major" ]
 	var instruments=instruments_array.pick_random()
 	var scales=scales_array.pick_random()
 	music_url= music_url+"?"+"num_notes="+str(notes)+"&scale="+scales+"&instrument="+instruments

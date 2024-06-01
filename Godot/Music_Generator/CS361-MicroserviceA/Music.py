@@ -42,7 +42,10 @@ def generate_music():
         'Blues': ['C4', 'Eb4', 'F4', 'Gb4', 'G4', 'Bb4'],
         'Pentatonic': ['C4', 'D4', 'E4', 'G4', 'A4', 'C5'],
         'E_minor': ['E3', 'F#3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4'],
-        'D_major': ['D3', 'E3', 'F#3', 'G3', 'A3', 'B3', 'C#4', 'D4']
+        'D_major': ['D3', 'E3', 'F#3', 'G3', 'A3', 'B3', 'C#4', 'D4'],
+        'A_flat': ['Ab3', 'Bb3', 'C4', 'Db4', 'Eb4', 'F4', 'G4', 'Ab4'],
+        'B_flat': ['Bb3', 'C4', 'D4', 'Eb4', 'F4', 'G4', 'A4', 'Bb4'],
+        'F_major': ['F3', 'G3', 'A3', 'Bb3', 'C4', 'D4', 'E4', 'F4']
     }
 
     scale = scales.get(scale_type)
@@ -78,6 +81,7 @@ def generate_music():
     for i in range(num_notes):
         pitch = generate_random_pitch(scale)
         music_note = note.Note(pitch)
+        music_note.duration.quarterLength /= 4
         music_stream.append(music_note)
 #changed the file name to include the timestamp
     midi_filename = f'output_{timestamp}.mid'
