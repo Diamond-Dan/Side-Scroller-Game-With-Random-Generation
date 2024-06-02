@@ -10,12 +10,39 @@ func _ready():
 	var sprite_url = "http://127.0.0.1:5000/generate_images_criteria"
 	var music_url="http://127.0.0.1:5001/generate"
 	var sound_effects_url="http://127.0.0.1:5005/generate_sounds"
+	var background_url="http://127.0.0.1:5010/request_image"
+	_generate_backgrounds(background_url)
 	_delete_music()
 	_delete_images()
 	_generate_sprite(sprite_url)
 	_generate_music(music_url)
 	_generate_sound_effects(sound_effects_url)
 	
+
+
+func _generate_backgrounds(url):
+	var headers = ["Content-Type: application/json"]
+	$gen_background_req.connect("request_completed", self._background_on_request_completed)
+	$gen_background_req.request(url,headers,HTTPClient.METHOD_GET)
+	
+func _background_on_request_completed(result, response_code, headers, body):
+	var background_json =JSON.parse_string(body.get_string_from_utf8())
+	var background_0=background_json["image_0"]
+	#var background_1= background_json["image_1"]
+	print(background_json)
+	print(background_0)
+	
+	_assign_background(background_0)
+func _assign_background(b_0):
+	b_0=b_0.replace("http://localhost:5010/backgrounds","res://Python//backgrounds")
+
+	print(b_0)
+	var pic1=Image.load_from_file(b_0)
+	var pic1_text=ImageTexture.create_from_image(pic1)
+	$background.set_texture(pic1_text)
+	Difficulty.background_0=b_0
+	
+		
 func _generate_sound_effects(sound_url):
 	var dir = DirAccess.open("res://Python//sounds")
 	var data = {
@@ -28,7 +55,6 @@ func _generate_sound_effects(sound_url):
 	
 	
 func _sounds_on_request_completed(result, response_code, headers, body):
-	await(2)
 	var sounds_json =JSON.parse_string(body.get_string_from_utf8())
 	_assign_sound(sounds_json)
 	
@@ -203,7 +229,7 @@ func _generate_music(music_url):
 	$gen_music_req.connect("request_completed", self._music_on_request_completed)
 	$gen_music_req.request(music_url,headers,HTTPClient.METHOD_GET)
 func _music_on_request_completed(result, response_code, headers, body):
-	await(2)
+	
 	var music_json =JSON.parse_string(body.get_string_from_utf8())
 	
 	var music_name=music_json["file"]

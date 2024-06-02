@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://c3tdir6qptdce"]
+[gd_scene load_steps=14 format=3 uid="uid://c3tdir6qptdce"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_8f2dn"]
 [ext_resource type="Texture2D" uid="uid://btrvbt32lmsyu" path="res://ship.png" id="2_as7rs"]
+[ext_resource type="Script" path="res://background.gd" id="2_lxrvj"]
 [ext_resource type="Script" path="res://mobspawner.gd" id="3_0v5j4"]
 [ext_resource type="Script" path="res://from_left_timer.gd" id="4_8asd7"]
 [ext_resource type="Texture2D" uid="uid://d35nxb1uoa4xk" path="res://assets/lifebar_bg.png" id="5_ct1vr"]
@@ -25,6 +26,17 @@ point_count = 11
 position = Vector2(336, -411)
 motion_mode = 1
 script = ExtResource("1_8f2dn")
+
+[node name="background)0" type="TextureRect" parent="."]
+offset_left = -458.0
+offset_top = -489.0
+offset_right = 1541.0
+offset_bottom = 412.0
+script = ExtResource("2_lxrvj")
+
+[node name="background_move" type="Timer" parent="background)0"]
+wait_time = 2.065
+autostart = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(316, 42)
@@ -129,6 +141,7 @@ volume_db = -30.952
 volume_db = -21.048
 pitch_scale = 1.9
 
+[connection signal="timeout" from="background)0/background_move" to="background)0" method="_on_background_move_timeout"]
 [connection signal="timeout" from="from_left_path/from_left_timer" to="from_left_path" method="_on_from_left_timer_timeout"]
 [connection signal="timeout" from="Score/Timer" to="Score" method="_on_timer_timeout"]
 [connection signal="pressed" from="MenuBar/quit_but" to="MenuBar" method="_on_quit_but_pressed"]
