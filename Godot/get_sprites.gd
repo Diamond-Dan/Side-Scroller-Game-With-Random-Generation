@@ -5,8 +5,12 @@ var global_anim_name_1="asteroid_1"
 var global_anim_name_2="asteroid_2"
 var global_anim_name_3="explode"
 var global_anim_count=0
+var flicker =22
+var transparency_change =.05
+var transparency_level =1.0
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	var image_gen_api_pid= OS.create_process("res://Python//image_gen_api.exe",[],true	)
 	var sprite_url = "http://127.0.0.1:5000/generate_images_criteria"
 	var music_url="http://127.0.0.1:5001/generate"
 	var sound_effects_url="http://127.0.0.1:5005/generate_sounds"
@@ -26,23 +30,48 @@ func _generate_backgrounds(url):
 	$gen_background_req.request(url,headers,HTTPClient.METHOD_GET)
 	
 func _background_on_request_completed(result, response_code, headers, body):
-	var background_json =JSON.parse_string(body.get_string_from_utf8())
-	var background_0=background_json["image_0"]
-	#var background_1= background_json["image_1"]
-	print(background_json)
-	print(background_0)
+	print(response_code)
+	if response_code ==500:
+		print('stable diffusion server is not running')
+	if response_code ==200:
+		var background_json =JSON.parse_string(body.get_string_from_utf8())
+		var background_0=background_json["image_0"]
+		#var background_1= background_json["image_1"]
+		print(background_json)
+		print(background_0)
 	
-	_assign_background(background_0)
+		_assign_background(background_0)
+		
 func _assign_background(b_0):
 	b_0=b_0.replace("http://localhost:5010/backgrounds","res://Python//backgrounds")
 
 	print(b_0)
 	var pic1=Image.load_from_file(b_0)
 	var pic1_text=ImageTexture.create_from_image(pic1)
-	$background.set_texture(pic1_text)
+	_set_background(pic1_text,b_0)
+	
+	
+func _set_background(pic1_text,b_0):
+	_modulate_default_background()
+	$background.set_texture(pic1_text)	
 	Difficulty.background_0=b_0
 	
+func _modulate_default_background():
+	pass
+	
 		
+func _on_flicker_timer_timeout():
+	flicker =flicker-1
+	if flicker%2 ==0 :
+		$default_background.set_self_modulate(Color(0.318,1,0.663,transparency_level))
+		
+	else:
+		$default_background.set_self_modulate(Color(1,1,1,transparency_level))
+		
+	if flicker==0:
+		$default_background/flicker_timer.stop()
+		_modulate_default_background()
+	transparency_level=transparency_level-transparency_change
 func _generate_sound_effects(sound_url):
 	var dir = DirAccess.open("res://Python//sounds")
 	var data = {
@@ -252,3 +281,6 @@ func _process(delta):
 func _on_timer_timeout():
 	spawn_ship()
 	
+
+
+

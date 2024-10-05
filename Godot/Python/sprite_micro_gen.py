@@ -8,32 +8,35 @@ import glob
 from PIL import Image, ImageDraw
 
 
-def main(start_x,start_y,frames,seed,pixel_number,mode,wiggle,xml,pixel_size,file_name,server_mode):
+def main(start_x,start_y,frames,seed,pixel_number,mode,wiggle,xml,pixel_size,file_name,curfile,server_mode):
     int_x=start_x
     int_y=start_y
     filename=[]
     filename_2=[]
     server_file_wiggle_name=[]
     server_file_explode_name=[]
-    cur_file_loc=os.path.dirname(os.path.realpath(__file__))
+    cur_file_loc=curfile
     filecount=0
     if mode=="1":
-        guide_array_x,guide_array_y,color_array=draw_random_image_intial(int_x,int_y,seed,pixel_number,file_name,pixel_size)
+        guide_array_x,guide_array_y,color_array=draw_random_image_intial(int_x,int_y,seed,pixel_number,file_name,pixel_size, cur_file_loc)
     elif mode=="2":
-        guide_array_x,guide_array_y,color_array=parse_xml(xml,file_name)
+        guide_array_x,guide_array_y,color_array=parse_xml(xml,file_name, cur_file_loc)
     elif mode=="3":
-        guide_array_x,guide_array_y,color_array=draw_planet(int_x,int_y,seed,pixel_number,file_name, pixel_size)
+        guide_array_x,guide_array_y,color_array=draw_planet(int_x,int_y,seed,pixel_number,file_name, pixel_size, cur_file_loc)
     
     for i in range(frames):
-       name,server_name=draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name)
-       if server_name!="":
+       name, server_name = draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name, cur_file_loc)
+
+       if server_name != "":
         filename.append(name)
        server_file_wiggle_name.append(server_name)
+
     for i in range(frames):
-        name_2,server_name=draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name)
+        name_2,server_name=draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_array,i,wiggle,pixel_size,file_name, cur_file_loc)
         if server_name!="":
             filename_2.append(name_2)
         server_file_explode_name.append(server_name)
+
     gif_loc_1=gif_maker(filename,cur_file_loc,seed,pixel_number,frames,filecount)
     gif_loc_2=gif_maker(filename_2,cur_file_loc,seed,pixel_number,frames,filecount)
     if server_mode==True:
@@ -60,11 +63,11 @@ def gif_maker(filename,cur_file_loc,seed,pixel_number,frames,filecount):
     return server_gif_name
 
 
-def image_saver(img,file_name):
+def image_saver(img,file_name, curfile):
     filecount=0
     name=""
     server_name=""
-    cur_file_loc=os.path.dirname(os.path.realpath(__file__))
+    cur_file_loc= curfile
     while os.path.isfile(cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png"):
         filecount+=1
         name=cur_file_loc+"\\Images\\"+file_name+str(filecount)+".png"
@@ -78,7 +81,7 @@ def image_saver(img,file_name):
     
     return name,server_name
 
-def draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,frame_num,wiggle,pixel_size,file_name):
+def draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,frame_num,wiggle,pixel_size,file_name, cur_file_loc):
     img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
     draw=ImageDraw.Draw(img)
     for i in range(len(guide_array_x)):
@@ -94,11 +97,11 @@ def draw_image_guided_wiggle(guide_array_x,guide_array_y,color_array,frame_num,w
             new_y-=10
         draw.rectangle((new_x,new_y,new_x+pixel_size,new_y+pixel_size),fill=(color_array[i*4],color_array[i*4+1],color_array[i*4+2],color_array[i*4+3]))
     file_name=file_name+"_wiggle"
-    name,server_name=image_saver(img,file_name)
+    name,server_name=image_saver(img,file_name, cur_file_loc)
     return name,server_name
 
 
-def draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_array,frame_num,wiggle,pixel_size,file_name):
+def draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_array,frame_num,wiggle,pixel_size,file_name, cur_file_loc):
     img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
     draw=ImageDraw.Draw(img)
     draw.rectangle((guide_array_x[0],guide_array_y[0],guide_array_x[0]+pixel_size,guide_array_y[0]+pixel_size),fill=(color_array[0],color_array[1],color_array[2],color_array[3]))
@@ -124,9 +127,11 @@ def draw_image_guided_explode(int_x,int_y,guide_array_x,guide_array_y,color_arra
             new_y=guide_array_y[i] 
         draw.rectangle((new_x,new_y,new_x+pixel_size,new_y+pixel_size),fill=(color_array[i*4],color_array[i*4+1],color_array[i*4+2],color_array[i*4+3]))
     file_name=file_name+"_explode"
-    name,server_name=image_saver(img,file_name)
+    name,server_name=image_saver(img,file_name, cur_file_loc)
     return name,server_name
-def draw_random_image_intial(x,y,seed,pixel_number,file_name,pixel_size):
+
+
+def draw_random_image_intial(x,y,seed,pixel_number,file_name,pixel_size, cur_file_loc):
     array_x=[x]
     array_y=[y]
     new_x=x
@@ -140,7 +145,7 @@ def draw_random_image_intial(x,y,seed,pixel_number,file_name,pixel_size):
     random_color_1=random.randint(0,255)
     random_color_2=random.randint(0,255)
     random_color_3=random.randint(0,255)
-    random_color_4=random.randint(0,255)
+    random_color_4=random.randint(200,255)
     random_color_array=[random_color_1,random_color_2,random_color_3,random_color_4]
     while i<pixel_number:
         random_number=random.randint(1,4)
@@ -187,14 +192,14 @@ def draw_random_image_intial(x,y,seed,pixel_number,file_name,pixel_size):
         i+=1
     #print(array_x,array_y)
    
-    image_saver(img, file_name)
+    image_saver(img, file_name, cur_file_loc)
     return array_x,array_y,random_color_array
 
-def parse_xml(xml_file_name, file_name):
+def parse_xml(xml_file_name, file_name, curfile):
     # Parse the XML file
     x=[]
     y=[]
-    current_file_path = os.path.dirname(os.path.realpath(__file__))
+    current_file_path = curfile
 
     file_name_loc=current_file_path+'\\patterns\\'+xml_file_name
     tree = ET.parse(file_name_loc)
@@ -205,7 +210,7 @@ def parse_xml(xml_file_name, file_name):
     random_color_1=random.randint(0,255)
     random_color_2=random.randint(0,255)
     random_color_3=random.randint(0,255)
-    random_color_4=random.randint(0,255)
+    random_color_4=random.randint(200,255)
     random_color_array=[random_color_1,random_color_2,random_color_3,random_color_4]
     # Find all 'partstitch' elements and print their 'x' and 'y' attributes
     for partstitch in root.iter():
@@ -232,15 +237,15 @@ def parse_xml(xml_file_name, file_name):
     # print(f'x: {x}, y: {y}')
     return x,y,random_color_array
 
-def draw_xml_image(x,y,file_name):
+def draw_xml_image(x,y,file_name, cur_file_loc):
     img = Image.new('RGBA', (100, 100), color = (0,0,0,0))
     draw=ImageDraw.Draw(img)
     
     for i in range(len(x)):
         draw.rectangle((x[i],y[i],x[i]+5,y[i]+5),fill=(255,0,0,255))
-    image_saver(img, file_name)
+    image_saver(img, file_name,cur_file_loc)
 
-def draw_planet(x,y,seed,pixel_number,file_name,pixel_size):
+def draw_planet(x,y,seed,pixel_number,file_name,pixel_size, cur_file_loc):
     array_x=[x]
     array_y=[y]
     new_x=x
@@ -271,7 +276,7 @@ def draw_planet(x,y,seed,pixel_number,file_name,pixel_size):
         draw.rectangle((array_x[i],array_y[i],array_x[i]+pixel_size,array_y[i]+pixel_size),fill=(255,0,0,255))
     #print(array_x,array_y)
    
-    image_saver(img, file_name)
+    image_saver(img, file_name, cur_file_loc)
     return array_x,array_y,random_color_array 
 
 if __name__ == '__main__':

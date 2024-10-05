@@ -39,6 +39,9 @@ def request_image():
     response = requests.post(url, json=myobj)
     image_list=[]
     # Check if the request was successful
+
+
+
     if response.status_code == 200:
         # Get the list of image URLs
         image_data_list = response.json()['images']

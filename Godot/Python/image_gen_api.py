@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, Blueprint, request, abort
 import random
 import os
+import sys
 import sprite_micro_gen
 app = Flask(__name__)
 # Create a blueprint for the first static folder
@@ -112,7 +113,16 @@ def generate_images_criteria():
     if pixel_size < 1 or pixel_size > 5:
         print("pixel_size must be between 1 and 5")
         abort(400, description="pixel_size must be between 1 and 5")
-    curfile = os.path.dirname(os.path.realpath(__file__))
+
+    if getattr(sys, 'frozen', False):
+        # If the application is run as a bundle, the PyInstaller bootloader
+        # extends the sys module by a flag frozen=True and sets the app path
+        curfile = os.path.dirname(sys.executable)
+    else:
+        # If the application is run as a simple script, this will be the path
+        curfile = os.path.dirname(os.path.abspath(__file__))
+#previous implementation
+    #curfile = os.path.dirname(os.path.realpath(__file__))
     print(curfile)
     if not os.path.isfile(curfile+'\\patterns\\'+xml):
         print("xml file does not exist")
@@ -126,7 +136,7 @@ def generate_images_criteria():
     filename, filename_2, gif_loc_1, gif_loc_2 = \
         sprite_micro_gen.main(start_x, start_y, frames, seed, pixel_number,
                               mode, wiggle, xml, pixel_size,
-                              file_name, server_mode=True)
+                              file_name, curfile ,server_mode=True)
 
     # Create URLs for each image file
     image_urls = {
