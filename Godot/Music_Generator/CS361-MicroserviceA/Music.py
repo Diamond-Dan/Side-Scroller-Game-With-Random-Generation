@@ -13,7 +13,16 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Set the folder where generated MIDI and MP3 files will be stored
-cur_dir=os.path.dirname(os.path.abspath(__file__))
+
+if getattr(sys, 'frozen', False):
+    # If the application is run as a bundle, the PyInstaller bootloader
+    # extends the sys module by a flag frozen=True and sets the app path
+    cur_dir = os.path.dirname(sys.executable)
+else:
+    # If the application is run as a simple script, this will be the path
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+
+
 app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')
 sound_font = os.path.join(os.getcwd(), 'soundfonts', 'GeneralUserGs.sf2')  # Path to the SoundFont file
 fluidsynth_path = os.path.join(cur_dir, 'fluidsynth', 'bin', 'fluidsynth.exe')

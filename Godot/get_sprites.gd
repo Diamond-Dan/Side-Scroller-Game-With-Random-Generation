@@ -8,19 +8,29 @@ var global_anim_count=0
 var flicker =22
 var transparency_change =.05
 var transparency_level =1.0
+var	image_gen_api_pid = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var image_gen_api_pid= OS.create_process("res://Python//image_gen_api.exe",[],true	)
+	
+	var cur_loc=  ProjectSettings.globalize_path("res://") 
+	var image_gen = cur_loc+ "//Python//image_gen_api.exe"
+	var sound_effect = cur_loc+"//Python//sound_effects_api.exe"
+	#var image_gen_api_pid= OS.create_process(image_gen,[],true	)
+	#var sound_effects_api_pid= OS.create_process(sound_effect,[],true	)
+	
 	var sprite_url = "http://127.0.0.1:5000/generate_images_criteria"
 	var music_url="http://127.0.0.1:5001/generate"
 	var sound_effects_url="http://127.0.0.1:5005/generate_sounds"
 	var background_url="http://127.0.0.1:5010/request_image"
+	
+	
 	_generate_backgrounds(background_url)
 	_delete_music()
 	_delete_images()
 	_generate_sprite(sprite_url)
 	_generate_music(music_url)
 	_generate_sound_effects(sound_effects_url)
+	
 	
 
 
@@ -220,11 +230,13 @@ func spawn_ship():
 #put a sprit on the front page with the gif we jsut generated, asseng from_left and instatiate it
 func _notification(what):
 	if what== NOTIFICATION_WM_CLOSE_REQUEST:
+		_end_processes()
 		_delete_music()
 		_delete_images()
 		
 
 func _delete_images():
+	print("trying to delete images")
 	var dir = DirAccess.open("res://Python//Images")
 	if dir:
 		dir.list_dir_begin()
@@ -236,6 +248,7 @@ func _delete_images():
 	
 func _delete_music():
 	var dir = DirAccess.open("res://Music_Generator//CS361-MicroserviceA//uploads")
+	print("trying to delete music")
 	if dir:
 		
 		dir.list_dir_begin()
@@ -245,7 +258,10 @@ func _delete_music():
 				
 				dir.remove(file_name)
 			file_name = dir.get_next()
-
+			
+func _end_processes():
+	print("trying to end microservices")
+	OS.kill(image_gen_api_pid)
 
 func _generate_music(music_url):
 	var headers = ["Content-Type: application/json"]
