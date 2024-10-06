@@ -29,6 +29,7 @@ See below the image being generated and a random sprite being animated with no s
 ![gif_2](https://github.com/user-attachments/assets/12dc7f5c-1e62-442d-8182-3e981b1fb6e9)
 
 ***UPDATE***
-You can make more animations for this game using another program I have created.
+You can make more animations for this game using another program I have created. 
+https://github.com/Diamond-Dan/Sprite_Gen 
 
 
