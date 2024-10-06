@@ -5,17 +5,83 @@ var global_anim_name_1="asteroid_1"
 var global_anim_name_2="asteroid_2"
 var global_anim_name_3="explode"
 var global_anim_count=0
+var flicker =22
+var transparency_change =.05
+var transparency_level =1.0
+var	image_gen_api_pid = 0
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	
+	var cur_loc=  ProjectSettings.globalize_path("res://") 
+	var image_gen = cur_loc+ "//Python//image_gen_api.exe"
+	var sound_effect = cur_loc+"//Python//sound_effects_api.exe"
+	#var image_gen_api_pid= OS.create_process(image_gen,[],true	)
+	#var sound_effects_api_pid= OS.create_process(sound_effect,[],true	)
+	
 	var sprite_url = "http://127.0.0.1:5000/generate_images_criteria"
 	var music_url="http://127.0.0.1:5001/generate"
 	var sound_effects_url="http://127.0.0.1:5005/generate_sounds"
+	var background_url="http://127.0.0.1:5010/request_image"
+	
+	
+	_generate_backgrounds(background_url)
 	_delete_music()
 	_delete_images()
 	_generate_sprite(sprite_url)
 	_generate_music(music_url)
 	_generate_sound_effects(sound_effects_url)
 	
+	
+
+
+func _generate_backgrounds(url):
+	var headers = ["Content-Type: application/json"]
+	$gen_background_req.connect("request_completed", self._background_on_request_completed)
+	$gen_background_req.request(url,headers,HTTPClient.METHOD_GET)
+	
+func _background_on_request_completed(result, response_code, headers, body):
+	print(response_code)
+	if response_code ==500:
+		print('stable diffusion server is not running')
+	if response_code ==200:
+		var background_json =JSON.parse_string(body.get_string_from_utf8())
+		var background_0=background_json["image_0"]
+		#var background_1= background_json["image_1"]
+		print(background_json)
+		print(background_0)
+	
+		_assign_background(background_0)
+		
+func _assign_background(b_0):
+	b_0=b_0.replace("http://localhost:5010/backgrounds","res://Python//backgrounds")
+
+	print(b_0)
+	var pic1=Image.load_from_file(b_0)
+	var pic1_text=ImageTexture.create_from_image(pic1)
+	_set_background(pic1_text,b_0)
+	
+	
+func _set_background(pic1_text,b_0):
+	_modulate_default_background()
+	$background.set_texture(pic1_text)	
+	Difficulty.background_0=b_0
+	
+func _modulate_default_background():
+	pass
+	
+		
+func _on_flicker_timer_timeout():
+	flicker =flicker-1
+	if flicker%2 ==0 :
+		$default_background.set_self_modulate(Color(0.318,1,0.663,transparency_level))
+		
+	else:
+		$default_background.set_self_modulate(Color(1,1,1,transparency_level))
+		
+	if flicker==0:
+		$default_background/flicker_timer.stop()
+		_modulate_default_background()
+	transparency_level=transparency_level-transparency_change
 func _generate_sound_effects(sound_url):
 	var dir = DirAccess.open("res://Python//sounds")
 	var data = {
@@ -28,7 +94,6 @@ func _generate_sound_effects(sound_url):
 	
 	
 func _sounds_on_request_completed(result, response_code, headers, body):
-	await(2)
 	var sounds_json =JSON.parse_string(body.get_string_from_utf8())
 	_assign_sound(sounds_json)
 	
@@ -165,11 +230,13 @@ func spawn_ship():
 #put a sprit on the front page with the gif we jsut generated, asseng from_left and instatiate it
 func _notification(what):
 	if what== NOTIFICATION_WM_CLOSE_REQUEST:
+		_end_processes()
 		_delete_music()
 		_delete_images()
 		
 
 func _delete_images():
+	print("trying to delete images")
 	var dir = DirAccess.open("res://Python//Images")
 	if dir:
 		dir.list_dir_begin()
@@ -181,6 +248,7 @@ func _delete_images():
 	
 func _delete_music():
 	var dir = DirAccess.open("res://Music_Generator//CS361-MicroserviceA//uploads")
+	print("trying to delete music")
 	if dir:
 		
 		dir.list_dir_begin()
@@ -190,7 +258,10 @@ func _delete_music():
 				
 				dir.remove(file_name)
 			file_name = dir.get_next()
-
+			
+func _end_processes():
+	print("trying to end microservices")
+	OS.kill(image_gen_api_pid)
 
 func _generate_music(music_url):
 	var headers = ["Content-Type: application/json"]
@@ -203,7 +274,7 @@ func _generate_music(music_url):
 	$gen_music_req.connect("request_completed", self._music_on_request_completed)
 	$gen_music_req.request(music_url,headers,HTTPClient.METHOD_GET)
 func _music_on_request_completed(result, response_code, headers, body):
-	await(2)
+	
 	var music_json =JSON.parse_string(body.get_string_from_utf8())
 	
 	var music_name=music_json["file"]
@@ -226,3 +297,6 @@ func _process(delta):
 func _on_timer_timeout():
 	spawn_ship()
 	
+
+
+

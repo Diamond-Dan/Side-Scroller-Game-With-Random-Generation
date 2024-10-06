@@ -1,0 +1,155 @@
+[gd_scene load_steps=19 format=3 uid="uid://m4mldp66rc6m"]
+
+[ext_resource type="Script" path="res://get_sprites.gd" id="1_u75ox"]
+[ext_resource type="Script" path="res://Start_Button.gd" id="1_ucgwb"]
+[ext_resource type="Script" path="res://Tutorial_Button.gd" id="2_hrosy"]
+[ext_resource type="Texture2D" uid="uid://dcx5wgrisco0p" path="res://assets/placeholder_background/00000-2992905472.png" id="2_vjfm6"]
+[ext_resource type="Script" path="res://Options_button.gd" id="3_4760c"]
+[ext_resource type="Texture2D" uid="uid://ct1xh7llff4on" path="res://assets/placeholder_background/00001-2387577097.png" id="3_f1igt"]
+[ext_resource type="Texture2D" uid="uid://cdw12at6yjot3" path="res://assets/placeholder_background/00002-712100783.png" id="4_11dhf"]
+[ext_resource type="Script" path="res://RichTextLabel.gd" id="4_ah3rv"]
+[ext_resource type="Texture2D" uid="uid://bqk3tsut6udlk" path="res://assets/placeholder_background/00003-1422344829.png" id="5_pw5v5"]
+[ext_resource type="Texture2D" uid="uid://5yc8gm8i42oj" path="res://assets/placeholder_background/00004-570685410.png" id="6_nc324"]
+[ext_resource type="Texture2D" uid="uid://b6jp3lb480rgf" path="res://assets/placeholder_background/00005-1615682505.png" id="7_kw57y"]
+[ext_resource type="Texture2D" uid="uid://3uesrco6xmxp" path="res://assets/placeholder_background/00006-3745703101.png" id="8_h4sus"]
+[ext_resource type="Texture2D" uid="uid://bqx8jhijbtt3p" path="res://assets/placeholder_background/00007-2423335399.png" id="9_s621h"]
+[ext_resource type="Texture2D" uid="uid://d2lvvmlf636ru" path="res://assets/placeholder_background/00008-3941565011.png" id="10_bp7cq"]
+[ext_resource type="Texture2D" uid="uid://1myi5yqd0bmy" path="res://assets/placeholder_background/00009-954656580.png" id="11_dspew"]
+[ext_resource type="Texture2D" uid="uid://bywysetbiqr5j" path="res://assets/placeholder_background/00010-4021109843.png" id="12_l1umh"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_caqd1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_vjfm6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_f1igt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_11dhf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_pw5v5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_nc324")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_kw57y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_h4sus")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_s621h")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_bp7cq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_dspew")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_l1umh")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AudioStreamWAV" id="AudioStreamWAV_l0mbh"]
+format = 1
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_u75ox")
+
+[node name="background" type="TextureRect" parent="."]
+offset_right = 1154.0
+offset_bottom = 648.0
+
+[node name="default_background" type="AnimatedSprite2D" parent="."]
+self_modulate = Color(0.317647, 1, 0.662745, 1)
+position = Vector2(576, 325)
+scale = Vector2(1.12109, 1.26172)
+sprite_frames = SubResource("SpriteFrames_caqd1")
+frame = 6
+frame_progress = 0.524694
+
+[node name="flicker_timer" type="Timer" parent="default_background"]
+wait_time = 0.235
+autostart = true
+
+[node name="Start_Button" type="Button" parent="."]
+offset_left = 510.0
+offset_top = 266.0
+offset_right = 518.0
+offset_bottom = 274.0
+scale = Vector2(1.76923, 2.63158)
+text = "Start Game"
+script = ExtResource("1_ucgwb")
+
+[node name="Tutorial_Button" type="Button" parent="."]
+custom_minimum_size = Vector2(120, 80)
+offset_left = 533.0
+offset_top = 372.0
+offset_right = 653.0
+offset_bottom = 452.0
+text = "Tutorial"
+script = ExtResource("2_hrosy")
+
+[node name="Options_button" type="Button" parent="."]
+offset_left = 1037.0
+offset_top = 29.0
+offset_right = 1111.0
+offset_bottom = 60.0
+text = "Options "
+script = ExtResource("3_4760c")
+
+[node name="Name" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(404, 152)
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 403.0
+offset_top = 120.0
+offset_right = 807.0
+offset_bottom = 272.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 53
+theme_override_font_sizes/bold_font_size = 1
+text = "Micro Defender"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = 493.0
+offset_top = 460.0
+offset_right = 693.0
+offset_bottom = 510.0
+text = "Last High Score:"
+script = ExtResource("4_ah3rv")
+
+[node name="gen_sprites_req" type="HTTPRequest" parent="."]
+
+[node name="ship_spawn_intro" type="Sprite2D" parent="."]
+position = Vector2(212, 155)
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[node name="music" type="AudioStreamPlayer" parent="."]
+autoplay = true
+
+[node name="gen_music_req" type="HTTPRequest" parent="."]
+
+[node name="gen_sound_req" type="HTTPRequest" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = SubResource("AudioStreamWAV_l0mbh")
+volume_db = -23.291
+autoplay = true
+
+[node name="gen_background_req" type="HTTPRequest" parent="."]
+timeout = 15.0
+
+[connection signal="timeout" from="default_background/flicker_timer" to="." method="_on_flicker_timer_timeout"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
